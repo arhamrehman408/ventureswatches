@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "products": {
+      "title": "products",
+      "description": "Watch products catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "price": { "type": "number" },
+        "images": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "price"]
+    },
+    "collections": {
+      "title": "collections",
+      "description": "Watch collections and categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "orders": {
+      "title": "orders",
+      "description": "Customer watch orders",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "total": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "total"]
+    },
+    "cms": {
+      "title": "cms",
+      "description": "Homepage CMS content",
+      "type": "object",
+      "properties": {
+        "heroTitle": { "type": "string" },
+        "heroImageUrl": { "type": "string" }
+      }
+    },
+    "media": {
+      "title": "media",
+      "description": "Horology media gallery assets with permanent database storage",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+        "size": { "type": "string" },
+        "data": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "url"]
+    },
+    "priceDropAlerts": {
+      "title": "priceDropAlerts",
+      "description": "Customer requests to be notified on product price drops",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "productSku": { "type": "string" },
+        "productImage": { "type": "string" },
+        "currentPrice": { "type": "number" },
+        "targetPrice": { "type": "number" },
+        "email": { "type": "string" },
+        "customerName": { "type": "string" },
+        "phone": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "notifiedAt": { "type": "string" }
+      },
+      "required": ["id", "productId", "email", "targetPrice"]
+    },
+    "system": {
+      "title": "system",
+      "description": "System state including deletion registries",
+      "type": "object",
+      "properties": {
+        "products": { "type": "array", "items": { "type": "string" } },
+        "media": { "type": "array", "items": { "type": "string" } },
+        "collections": { "type": "array", "items": { "type": "string" } },
+        "orders": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "products",
+      "description": "Watch product catalog items"
+    },
+    "/collections/{collectionId}": {
+      "schema": "collections",
+      "description": "Watch collection categories"
+    },
+    "/orders/{orderId}": {
+      "schema": "orders",
+      "description": "Customer orders"
+    },
+    "/cms/{docId}": {
+      "schema": "cms",
+      "description": "Homepage CMS settings and content"
+    },
+    "/media/{mediaId}": {
+      "schema": "media",
+      "description": "Media assets and pictures"
+    },
+    "/priceDropAlerts/{alertId}": {
+      "schema": "priceDropAlerts",
+      "description": "Price drop alert subscriptions"
+    },
+    "/system/{systemId}": {
+      "schema": "system",
+      "description": "System configuration and deletion registers"
+    }
+  }
+}

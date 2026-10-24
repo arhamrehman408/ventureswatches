@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ord-1791666861251",
+    "orderNumber": "VW-64973",
+    "orderStatus": "Confirmed",
+    "emailConfirmationSent": true,
+    "paymentDetails": {
+      "proofUrl": "",
+      "destinationAccount": "03192265524",
+      "destinationTitle": "Muhammad Tayyab Asghar",
+      "walletType": "EASYPAISA",
+      "trxId": "SDP-WAL-1791666859935-6106",
+      "destinationBank": "SadaPay",
+      "gateway": "SadaPay Direct Bank Ledger",
+      "senderPhone": "5435676",
+      "isAdvancePaid": true
+    },
+    "subtotal": 12000,
+    "items": [
+      {
+        "sku": "rlx-1",
+        "image": "/uploads/vw-media-1791470009099-2584.jpeg",
+        "productId": "prod-1790795941268",
+        "price": 12000,
+        "quantity": 1,
+        "productName": "Cartier Black"
+      }
+    ],
+    "total": 12300,
+    "shipping": 300,
+    "createdAt": "2026-10-10T21:14:21.251Z",
+    "paymentStatus": "Paid",
+    "currency": "PKR",
+    "customer": {
+      "phone": "03458604713",
+      "postalCode": "",
+      "email": "arhamrehman408@gmail.com",
+      "name": "Arham Rehman",
+      "country": "Pakistan",
+      "address": "House no 304 mateen avenue township lahore",
+      "city": "Karachi"
+    },
+    "emailApprovalStatus": "Approved & Sent",
+    "emailSentAt": "2026-10-20T13:12:09.454Z",
+    "paymentMethod": "easypaisa"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "col-1",
+    "slug": "original-watches",
+    "description": "Precision mechanical timepieces driven by the motion of your wrist.",
+    "sortOrder": 1,
+    "image": "/uploads/vw-media-1791468845218-5916.jpeg",
+    "featured": true,
+    "name": "Original Watches"
+  },
+  {
+    "id": "col-1792132998537",
+    "slug": "test-heritage",
+    "description": "Limited test collection",
+    "sortOrder": 5,
+    "name": "Test Heritage Collection",
+    "featured": true,
+    "image": ""
+  },
+  {
+    "id": "col-2",
+    "description": "High-performance chronographs built for measurement and motorsport racing.",
+    "image": "/uploads/vw-media-1791468789105-1317.jpeg",
+    "sortOrder": 2,
+    "slug": "clone-watches",
+    "featured": true,
+    "name": "Clone Watches"
+  },
+  {
+    "id": "col-3",
+    "description": "Timeless dress watches designed with pure architectural elegance.",
+    "slug": "copy-watches",
+    "image": "/uploads/vw-media-1791468816962-5187.jpeg",
+    "featured": true,
+    "sortOrder": 3,
+    "name": "Copy Watches"
+  }
+]

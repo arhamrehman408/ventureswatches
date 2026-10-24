@@ -1,0 +1,404 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-[#0B192C] text-slate-100 overflow-x-hidden selection:bg-amber-500/30 selection:text-amber-200;
+  }
+
+  /* Custom luxury scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #06111f;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e3a5f;
+    border-radius: 4px;
+    border: 2px solid #06111f;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+  }
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.85); }
+  70% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.5deg); }
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes gravityCascadeFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-45px) scale(0.94) rotateX(10deg);
+    filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.25));
+  }
+  60% {
+    opacity: 0.95;
+    transform: translateY(6px) scale(1.015) rotateX(-2deg);
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.15));
+  }
+  80% {
+    transform: translateY(-3px) scale(0.995) rotateX(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+  }
+}
+
+@keyframes dropFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.92);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(8px) scale(1.02);
+  }
+  85% {
+    transform: translateY(-3px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardTumbleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px) rotate(-3deg) scale(0.9);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(5px) rotate(1deg) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.04); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes goldShine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
+}
+
+@keyframes liveSyncPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Utility Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-left {
+  animation: slideLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-right {
+  animation: slideRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pop-in {
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-gravity-fall {
+  animation: gravityCascadeFall 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  perspective: 1000px;
+}
+
+.animate-drop-fall {
+  animation: dropFall 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-card-tumble {
+  animation: cardTumbleIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-float {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite;
+}
+
+.animate-gold-shine {
+  background: linear-gradient(135deg, #d4af37 0%, #f6e082 25%, #d4af37 50%, #aa8210 75%, #d4af37 100%);
+  background-size: 200% 200%;
+  animation: goldShine 4s ease infinite;
+}
+
+.animate-badge-pulse {
+  animation: badgePulse 2.5s infinite;
+}
+
+.animate-sync-live {
+  animation: liveSyncPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Stagger Animation Delays */
+.delay-75  { animation-delay: 75ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-250 { animation-delay: 250ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+
+/* Interactive Hover Luxury Transitions */
+.hover-luxury-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.hover-luxury-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5), 0 0 25px -5px rgba(212, 175, 55, 0.15);
+}
+
+.hover-luxury-scale {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+}
+
+.hover-luxury-scale:hover {
+  transform: scale(1.02);
+  filter: brightness(1.04);
+}
+
+.hover-gold-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.hover-gold-glow:hover {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+  border-color: rgba(212, 175, 55, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-luxury-action {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-luxury-action::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.6s ease;
+}
+
+.btn-luxury-action:hover::after {
+  left: 100%;
+}
+
+.btn-luxury-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-luxury-action:active {
+  transform: translateY(0);
+}
+
+.glass-panel-luxury {
+  background: rgba(11, 25, 44, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Page Transition Wrappers */
+.page-enter {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards, slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-enter {
+  animation: modalUltraSmooth 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@keyframes modalUltraSmooth {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.drawer-enter {
+  animation: slideLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Text Shimmer Effect for Luxury Headings */
+.text-shimmer-gold {
+  background: linear-gradient(90deg, #d4af37 0%, #fff3c4 50%, #d4af37 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Live Cloud Multi-Device Sync Indicator */
+.sync-indicator-pulse {
+  position: relative;
+  display: inline-flex;
+}
+
+.sync-indicator-pulse::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.4);
+  animation: liveSyncPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Responsive Interface Control: Mobile (Portrait & Landscape phone) vs Laptop/Desktop */
+@media (max-width: 767px), (orientation: landscape) and (max-height: 500px) {
+  .vw-mobile-only {
+    display: block !important;
+  }
+  .vw-mobile-only-flex {
+    display: flex !important;
+  }
+  .vw-laptop-only,
+  .vw-laptop-only-flex {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (min-height: 501px) {
+  .vw-mobile-only,
+  .vw-mobile-only-flex {
+    display: none !important;
+  }
+  .vw-laptop-only {
+    display: block !important;
+  }
+  .vw-laptop-only-flex {
+    display: flex !important;
+  }
+}
+

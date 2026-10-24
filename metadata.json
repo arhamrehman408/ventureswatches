@@ -1,0 +1,6 @@
+{
+  "name": "Ventures Watches",
+  "description": "Luxury Watch E-Commerce Platform & Management Dashboard",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

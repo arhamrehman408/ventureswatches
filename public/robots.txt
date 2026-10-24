@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Canonical XML Sitemap
+Sitemap: https://ventureswatches.com/sitemap.xml
