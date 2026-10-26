@@ -998,23 +998,17 @@ export async function fetchCMSData(): Promise<CMSData> {
     ...(firestoreData || {})
   };
 
-  if (mergedData.heroTitle === undefined) {
-    mergedData.heroTitle = 'VENTURES WATCHES';
-  } else if (typeof mergedData.heroTitle === 'string' && (mergedData.heroTitle.includes('TIME, REFINED') || mergedData.heroTitle.includes('TIME REFINED'))) {
-    mergedData.heroTitle = 'VENTURES WATCHES';
-  }
-
-  if (mergedData.heroSubtitle === undefined) {
-    mergedData.heroSubtitle = '100% Authentic Watches & High-End Clones';
-  } else if (typeof mergedData.heroSubtitle === 'string' && mergedData.heroSubtitle.includes('CRAFTED FOR EVERY MOMENT')) {
-    mergedData.heroSubtitle = '100% Authentic Watches & High-End Clones';
-  }
-
-  if (mergedData.brandStatement === undefined) {
-    mergedData.brandStatement = 'Featuring Timepieces from the World’s Finest Brands. ⌚✨';
-  } else if (typeof mergedData.brandStatement === 'string' && (mergedData.brandStatement.includes('Architectural horology') || mergedData.brandStatement.includes('VENTURES WATCHES COMBINES'))) {
-    mergedData.brandStatement = 'Featuring Timepieces from the World’s Finest Brands. ⌚✨';
-  }
+  mergedData.heroTitle = '';
+  mergedData.heroSubtitle = '';
+  mergedData.heroCtaText = '';
+  mergedData.heroSecondaryCtaText = '';
+  mergedData.heroBadgeText = '';
+  mergedData.brandStatement = '';
+  mergedData.heroShowTitle = false;
+  mergedData.heroShowSubtitle = false;
+  mergedData.heroShowStatement = false;
+  mergedData.heroShowPrimaryCta = false;
+  mergedData.heroShowSecondaryCta = false;
   if (!mergedData.editorialImage || mergedData.editorialImage.includes('photo-1522335789203') || mergedData.editorialImage.includes('chatgpt.com') || mergedData.editorialImage.includes('ventures-curated-horology')) {
     mergedData.editorialImage = initialCMSData.editorialImage;
   }

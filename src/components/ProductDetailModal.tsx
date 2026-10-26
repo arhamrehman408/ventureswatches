@@ -52,9 +52,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!product) return null;
 
   const rawImages = Array.isArray(product.images)
-    ? product.images.filter(img => img && !img.includes('unsplash.com') && !img.includes('photo-1522335789203') && !img.includes('photo-1524805444758'))
+    ? product.images.filter(img => Boolean(img && typeof img === 'string' && img.trim().length > 0))
     : [];
-  const images = rawImages;
+  const images = rawImages.length > 0 ? rawImages : ['/uploads/vw-media-1791470009099-2584.jpeg'];
 
   const stock = typeof product.stock === 'number' ? Math.max(0, product.stock) : 99;
   const isOutOfStock = stock <= 0;
@@ -139,6 +139,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     alt={product.name}
                     decoding="async"
                     loading="eager"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                        target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                      }
+                    }}
                     className="w-full h-full object-contain cursor-zoom-in transition-transform duration-300 group-hover:scale-105"
                     onClick={() => setIsZoomOpen(true)}
                   />
@@ -172,7 +178,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       selectedImageIndex === idx ? 'border-[#0B192C] ring-1 ring-[#0B192C]' : 'border-gray-200 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="" loading="lazy" decoding="async" className="w-full h-full object-contain" />
+                    <img
+                      src={img}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        e.currentTarget.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                      }}
+                      className="w-full h-full object-contain"
+                    />
                   </button>
                 ))}
               </div>
@@ -461,6 +476,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <img
             src={images[selectedImageIndex]}
             alt={product.name}
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+              }
+            }}
             className="max-w-full max-h-[85vh] object-contain"
           />
           <p className="text-xs text-slate-300 font-serif tracking-widest mt-4">

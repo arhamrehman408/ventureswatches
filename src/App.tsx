@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { doc, collection, onSnapshot } from 'firebase/firestore';
-import { db } from './lib/firebase';
+import { db, auth } from './lib/firebase';
 import { Product, Collection, CartItem, Order, CMSData, MediaItem, User } from './types';
 import { initialProducts, initialCollections, initialCMSData, initialMedia } from './data/mockData';
 import {
@@ -18,6 +18,7 @@ import {
   getLocalVersionTimestamps,
   setLocalVersionTimestamp,
   setFirestoreQuotaExhausted,
+  isFirestoreActive,
   notifyDataUpdated,
   getAdminToken
 } from './services/api';
@@ -238,185 +239,211 @@ export default function App() {
     // 3. Set up real-time Firebase Firestore subscriptions for automatic instant sync
     const unsubscribers: (() => void)[] = [];
 
-    try {
-      // (a) System Metadata & Version-Timestamp real-time sync with batched resolution
-      const metaDocRef = doc(db, 'system', 'metadata');
-      const unsubMeta = onSnapshot(metaDocRef, async (snap) => {
-        if (snap.exists()) {
-          const remoteLastUpdated = snap.data()?.last_updated || {};
-          const localTs = getLocalVersionTimestamps();
-
-          let needsProductRefresh = false;
-          let needsCmsMediaRefresh = false;
-          let needsColRefresh = false;
-          let needsOrderRefresh = false;
-
-          if (remoteLastUpdated.products && remoteLastUpdated.products !== localTs.products) {
-            localStorage.removeItem('vw_saved_products');
-            setLocalVersionTimestamp('products', remoteLastUpdated.products);
-            needsProductRefresh = true;
-          }
-          if (remoteLastUpdated.cms && remoteLastUpdated.cms !== localTs.cms) {
-            localStorage.removeItem('vw_cms_data');
-            setLocalVersionTimestamp('cms', remoteLastUpdated.cms);
-            needsCmsMediaRefresh = true;
-          }
-          if (remoteLastUpdated.media && remoteLastUpdated.media !== localTs.media) {
-            localStorage.removeItem('vw_uploaded_media_vault');
-            setLocalVersionTimestamp('media', remoteLastUpdated.media);
-            needsCmsMediaRefresh = true;
-          }
-          if (remoteLastUpdated.collections && remoteLastUpdated.collections !== localTs.collections) {
-            localStorage.removeItem('vw_collections');
-            setLocalVersionTimestamp('collections', remoteLastUpdated.collections);
-            needsColRefresh = true;
-          }
-          if (remoteLastUpdated.orders && remoteLastUpdated.orders !== localTs.orders) {
-            localStorage.removeItem('vw_orders');
-            setLocalVersionTimestamp('orders', remoteLastUpdated.orders);
-            needsOrderRefresh = true;
-          }
-
-          if (needsCmsMediaRefresh) {
-            const { cms, media } = await fetchCMSAndMediaBatched();
-            setCmsData(cms);
-            setMediaItems(media);
-          }
-          if (needsProductRefresh) fetchProducts().then(setProducts);
-          if (needsColRefresh) fetchCollections().then(setCollections);
-          if (needsOrderRefresh) fetchOrders().then(setOrders);
-        }
-      }, (err) => {
-        if (String(err?.message || '').includes('resource-exhausted') || String(err?.code || '').includes('resource-exhausted')) {
-          setFirestoreQuotaExhausted(true);
-        }
+    const handleQuotaExhausted = () => {
+      setFirestoreQuotaExhausted(true);
+      // Cleanly unsubscribe all active snapshot listeners to stop further quota errors
+      unsubscribers.forEach(u => {
+        try { u(); } catch {}
       });
-      unsubscribers.push(unsubMeta);
+      unsubscribers.length = 0;
+    };
 
-      // (b) CMS real-time sync (hero video, hero banner, craftsman, category showcases, editorial, etc.)
-      const cmsDocRef = doc(db, 'cms', 'main');
-      const unsubCMS = onSnapshot(cmsDocRef, (snap) => {
-        if (snap.exists()) {
-          const liveCms = snap.data() as CMSData;
-          setCmsData(prev => {
-            const nextVideo = (liveCms.heroVideoUrl && liveCms.heroVideoUrl.trim().length > 0)
-              ? liveCms.heroVideoUrl.trim()
-              : (liveCms.heroVideoUrl === '' ? '' : prev.heroVideoUrl);
+    if (isFirestoreActive()) {
+      try {
+        // (a) System Metadata & Version-Timestamp real-time sync with batched resolution
+        const metaDocRef = doc(db, 'system', 'metadata');
+        const unsubMeta = onSnapshot(metaDocRef, async (snap) => {
+          if (snap.exists()) {
+            const remoteLastUpdated = snap.data()?.last_updated || {};
+            const localTs = getLocalVersionTimestamps();
 
-            const updated = {
-              ...prev,
-              ...liveCms,
-              heroVideoUrl: nextVideo
-            };
-            try { localStorage.setItem('vw_cms_data', JSON.stringify(updated)); } catch {}
-            return updated;
-          });
-        }
-      }, (err) => {
-        if (String(err?.message || '').includes('resource-exhausted') || String(err?.code || '').includes('resource-exhausted')) {
-          setFirestoreQuotaExhausted(true);
-        }
-      });
-      unsubscribers.push(unsubCMS);
+            let needsProductRefresh = false;
+            let needsCmsMediaRefresh = false;
+            let needsColRefresh = false;
+            let needsOrderRefresh = false;
 
-      // (c) Products real-time sync
-      const prodRef = collection(db, 'products');
-      const unsubProds = onSnapshot(prodRef, async (snap) => {
-        const delRegistry = await getDeletionRegistry();
-        const deletedSet = new Set(delRegistry.products.map(id => String(id).trim()));
-        const prods: Product[] = [];
-        snap.forEach(d => {
-          if (!deletedSet.has(d.id)) {
-            prods.push(normalizeProduct({ id: d.id, ...(d.data() as Product) }));
-          }
-        });
-        setProducts(prods);
-        try { localStorage.setItem('vw_saved_products', JSON.stringify(prods)); } catch {}
-      }, (err) => {
-        if (String(err?.message || '').includes('resource-exhausted') || String(err?.code || '').includes('resource-exhausted')) {
-          setFirestoreQuotaExhausted(true);
-        }
-      });
-      unsubscribers.push(unsubProds);
-
-      // (d) Collections real-time sync
-      const colRef = collection(db, 'collections');
-      const unsubCols = onSnapshot(colRef, async (snap) => {
-        const delRegistry = await getDeletionRegistry();
-        const deletedSet = new Set(delRegistry.collections.map(id => String(id).trim()));
-        let cols: Collection[] = [];
-        snap.forEach(d => {
-          if (!deletedSet.has(d.id)) {
-            cols.push(normalizeCollection({ id: d.id, ...(d.data() as Collection) }));
-          }
-        });
-        if (cols.length === 0) {
-          cols = initialCollections.filter(c => !deletedSet.has(c.id)).map(normalizeCollection);
-        }
-        cols.sort((a, b) => {
-          const orderA = a.id === 'col-1' ? 1 : a.id === 'col-2' ? 2 : a.id === 'col-3' ? 3 : a.id === 'col-4' ? 4 : 99;
-          const orderB = b.id === 'col-1' ? 1 : b.id === 'col-2' ? 2 : b.id === 'col-3' ? 3 : b.id === 'col-4' ? 4 : 99;
-          return orderA - orderB;
-        });
-        setCollections(cols);
-        try { localStorage.setItem('vw_collections', JSON.stringify(cols)); } catch {}
-      }, (err) => {
-        if (String(err?.message || '').includes('resource-exhausted') || String(err?.code || '').includes('resource-exhausted')) {
-          setFirestoreQuotaExhausted(true);
-        }
-      });
-      unsubscribers.push(unsubCols);
-
-      // (e) Media Vault real-time sync (strictly mirror admin console media & purge stale cache)
-      const medRef = collection(db, 'media');
-      const unsubMed = onSnapshot(medRef, async (snap) => {
-        const delRegistry = await getDeletionRegistry();
-        const deletedSet = new Set(delRegistry.media.map(id => String(id).trim()));
-        const media: MediaItem[] = [];
-        snap.forEach(d => {
-          if (!deletedSet.has(d.id)) {
-            const item = { id: d.id, ...(d.data() as MediaItem) };
-            if (item.url && !item.url.includes('unsplash.com') && !item.url.includes('photo-1522335789203') && !item.url.includes('photo-1524805444758') && !item.url.includes('photo-1509042239860')) {
-              media.push(item);
+            if (remoteLastUpdated.products && remoteLastUpdated.products !== localTs.products) {
+              localStorage.removeItem('vw_saved_products');
+              setLocalVersionTimestamp('products', remoteLastUpdated.products);
+              needsProductRefresh = true;
             }
-          }
-        });
-        media.sort((a, b) => new Date(b.createdAt || b.uploadedAt || 0).getTime() - new Date(a.createdAt || a.uploadedAt || 0).getTime());
-        setMediaItems(media);
-        try {
-          localStorage.setItem('vw_uploaded_media_vault', JSON.stringify(media));
-        } catch {}
-      }, (err) => {
-        if (String(err?.message || '').includes('resource-exhausted') || String(err?.code || '').includes('resource-exhausted')) {
-          setFirestoreQuotaExhausted(true);
-        }
-      });
-      unsubscribers.push(unsubMed);
+            if (remoteLastUpdated.cms && remoteLastUpdated.cms !== localTs.cms) {
+              localStorage.removeItem('vw_cms_data');
+              setLocalVersionTimestamp('cms', remoteLastUpdated.cms);
+              needsCmsMediaRefresh = true;
+            }
+            if (remoteLastUpdated.media && remoteLastUpdated.media !== localTs.media) {
+              localStorage.removeItem('vw_uploaded_media_vault');
+              setLocalVersionTimestamp('media', remoteLastUpdated.media);
+              needsCmsMediaRefresh = true;
+            }
+            if (remoteLastUpdated.collections && remoteLastUpdated.collections !== localTs.collections) {
+              localStorage.removeItem('vw_collections');
+              setLocalVersionTimestamp('collections', remoteLastUpdated.collections);
+              needsColRefresh = true;
+            }
+            if (remoteLastUpdated.orders && remoteLastUpdated.orders !== localTs.orders) {
+              localStorage.removeItem('vw_orders');
+              setLocalVersionTimestamp('orders', remoteLastUpdated.orders);
+              needsOrderRefresh = true;
+            }
 
-      // (f) Orders real-time sync (Restricted to authenticated admin to protect customer privacy)
-      if (getAdminToken()) {
-        const ordRef = collection(db, 'orders');
-        const unsubOrd = onSnapshot(ordRef, () => {
-          fetchOrders().then(ords => {
-            if (Array.isArray(ords)) setOrders(ords);
-          }).catch(() => {});
+            if (needsCmsMediaRefresh) {
+              const { cms, media } = await fetchCMSAndMediaBatched();
+              setCmsData(cms);
+              setMediaItems(media);
+            }
+            if (needsProductRefresh) fetchProducts().then(setProducts);
+            if (needsColRefresh) fetchCollections().then(setCollections);
+            if (needsOrderRefresh) fetchOrders().then(setOrders);
+          }
         }, (err) => {
-          if (String(err?.message || '').includes('resource-exhausted') || String(err?.code || '').includes('resource-exhausted')) {
-            setFirestoreQuotaExhausted(true);
+          const msg = String(err?.message || err?.code || '');
+          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+            handleQuotaExhausted();
           }
         });
-        unsubscribers.push(unsubOrd);
+        unsubscribers.push(unsubMeta);
+
+        // (b) CMS real-time sync (hero video, hero banner, craftsman, category showcases, editorial, etc.)
+        const cmsDocRef = doc(db, 'cms', 'main');
+        const unsubCMS = onSnapshot(cmsDocRef, (snap) => {
+          if (snap.exists()) {
+            const liveCms = snap.data() as CMSData;
+            setCmsData(prev => {
+              const nextVideo = (liveCms.heroVideoUrl && liveCms.heroVideoUrl.trim().length > 0)
+                ? liveCms.heroVideoUrl.trim()
+                : (liveCms.heroVideoUrl === '' ? '' : prev.heroVideoUrl);
+
+              const updated = {
+                ...prev,
+                ...liveCms,
+                heroVideoUrl: nextVideo
+              };
+              try { localStorage.setItem('vw_cms_data', JSON.stringify(updated)); } catch {}
+              return updated;
+            });
+          }
+        }, (err) => {
+          const msg = String(err?.message || err?.code || '');
+          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+            handleQuotaExhausted();
+          }
+        });
+        unsubscribers.push(unsubCMS);
+
+        // (c) Products real-time sync
+        const prodRef = collection(db, 'products');
+        const unsubProds = onSnapshot(prodRef, async (snap) => {
+          const delRegistry = await getDeletionRegistry();
+          const deletedSet = new Set(delRegistry.products.map(id => String(id).trim()));
+          const prods: Product[] = [];
+          snap.forEach(d => {
+            if (!deletedSet.has(d.id)) {
+              prods.push(normalizeProduct({ id: d.id, ...(d.data() as Product) }));
+            }
+          });
+          setProducts(prods);
+          try { localStorage.setItem('vw_saved_products', JSON.stringify(prods)); } catch {}
+        }, (err) => {
+          const msg = String(err?.message || err?.code || '');
+          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+            handleQuotaExhausted();
+          }
+        });
+        unsubscribers.push(unsubProds);
+
+        // (d) Collections real-time sync
+        const colRef = collection(db, 'collections');
+        const unsubCols = onSnapshot(colRef, async (snap) => {
+          const delRegistry = await getDeletionRegistry();
+          const deletedSet = new Set(delRegistry.collections.map(id => String(id).trim()));
+          let cols: Collection[] = [];
+          snap.forEach(d => {
+            if (!deletedSet.has(d.id)) {
+              cols.push(normalizeCollection({ id: d.id, ...(d.data() as Collection) }));
+            }
+          });
+          if (cols.length === 0) {
+            cols = initialCollections.filter(c => !deletedSet.has(c.id)).map(normalizeCollection);
+          }
+          cols.sort((a, b) => {
+            const orderA = a.id === 'col-1' ? 1 : a.id === 'col-2' ? 2 : a.id === 'col-3' ? 3 : a.id === 'col-4' ? 4 : 99;
+            const orderB = b.id === 'col-1' ? 1 : b.id === 'col-2' ? 2 : b.id === 'col-3' ? 3 : b.id === 'col-4' ? 4 : 99;
+            return orderA - orderB;
+          });
+          setCollections(cols);
+          try { localStorage.setItem('vw_collections', JSON.stringify(cols)); } catch {}
+        }, (err) => {
+          const msg = String(err?.message || err?.code || '');
+          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+            handleQuotaExhausted();
+          }
+        });
+        unsubscribers.push(unsubCols);
+
+        // (e) Media Vault real-time sync (strictly mirror admin console media & purge stale cache)
+        const medRef = collection(db, 'media');
+        const unsubMed = onSnapshot(medRef, async (snap) => {
+          const delRegistry = await getDeletionRegistry();
+          const deletedSet = new Set(delRegistry.media.map(id => String(id).trim()));
+          const media: MediaItem[] = [];
+          snap.forEach(d => {
+            if (!deletedSet.has(d.id)) {
+              const item = { id: d.id, ...(d.data() as MediaItem) };
+              if (item.url && !item.url.includes('unsplash.com') && !item.url.includes('photo-1522335789203') && !item.url.includes('photo-1524805444758') && !item.url.includes('photo-1509042239860')) {
+                media.push(item);
+              }
+            }
+          });
+          media.sort((a, b) => new Date(b.createdAt || b.uploadedAt || 0).getTime() - new Date(a.createdAt || a.uploadedAt || 0).getTime());
+          setMediaItems(media);
+          try {
+            localStorage.setItem('vw_uploaded_media_vault', JSON.stringify(media));
+          } catch {}
+        }, (err) => {
+          const msg = String(err?.message || err?.code || '');
+          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+            handleQuotaExhausted();
+          }
+        });
+        unsubscribers.push(unsubMed);
+
+        // (f) Orders real-time sync (Restricted to authenticated admin to protect customer privacy)
+        if (auth.currentUser && getAdminToken()) {
+          const ordRef = collection(db, 'orders');
+          const unsubOrd = onSnapshot(ordRef, () => {
+            fetchOrders().then(ords => {
+              if (Array.isArray(ords)) setOrders(ords);
+            }).catch(() => {});
+          }, (err) => {
+            const msg = String(err?.message || '') + ' ' + String(err?.code || '');
+            if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+              handleQuotaExhausted();
+            } else if (msg.includes('permission-denied') || msg.includes('Missing or insufficient permissions')) {
+              console.debug('[Firestore onSnapshot orders] Permission denied. Falling back to Express API.');
+            }
+          });
+          unsubscribers.push(unsubOrd);
+        }
+
+        // (g) System Deletions real-time sync
+        const delDocRef = doc(db, 'system', 'deletions');
+        const unsubDel = onSnapshot(delDocRef, () => {
+          loadInitialData();
+        }, (err) => {
+          const msg = String(err?.message || '') + ' ' + String(err?.code || '');
+          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
+            handleQuotaExhausted();
+          } else if (msg.includes('permission-denied') || msg.includes('Missing or insufficient permissions')) {
+            console.debug('[Firestore onSnapshot deletions] Detached.');
+          }
+        });
+        unsubscribers.push(unsubDel);
+
+      } catch (e) {
+        console.warn('Real-time Firebase sync setup warning:', e);
       }
-
-      // (g) System Deletions real-time sync
-      const delDocRef = doc(db, 'system', 'deletions');
-      const unsubDel = onSnapshot(delDocRef, () => {
-        loadInitialData();
-      }, () => {});
-      unsubscribers.push(unsubDel);
-
-    } catch (e) {
-      console.warn('Real-time Firebase sync setup warning:', e);
     }
 
     // 4. Real-time Server-Sent Events (SSE) stream for instant cross-device push updates
@@ -879,6 +906,12 @@ export default function App() {
                           <img
                             src={displayImage}
                             alt={title}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (!target.src.includes('vw-media-1787122972078-1919.jpeg')) {
+                                target.src = defaultTierImg;
+                              }
+                            }}
                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
                           />
                         ) : (
@@ -1006,6 +1039,12 @@ export default function App() {
                           <img
                             src={displayImage}
                             alt={title}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (!target.src.includes('vw-media-1787122972078-1919.jpeg')) {
+                                target.src = defaultTierImg;
+                              }
+                            }}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           />
                         ) : (
@@ -1158,6 +1197,12 @@ export default function App() {
                 <img
                   src={cmsData.aboutImage || cmsData.aboutImageUrl || '/uploads/vw-media-1787123315922-8585.jpg'}
                   alt="Ventures Atelier"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('vw-media-1787123315922-8585.jpg')) {
+                      target.src = '/uploads/vw-media-1787123315922-8585.jpg';
+                    }
+                  }}
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -16,7 +16,7 @@ export const CraftsmanshipSection: React.FC<CraftsmanshipSectionProps> = ({ cmsD
       subtitle: cmsData.originalWatchesSubtitle || 'Authentic Luxury Watches',
       icon: Award,
       description: cmsData.originalWatchesDesc || 'Genuine, manufacturer-verified timepieces sourced directly from world-renowned heritage houses. Every piece includes authenticated serial numbers, official documentation, and factory warranty.',
-      image: cmsData.originalWatchesImage || ''
+      image: cmsData.originalWatchesImage || '/uploads/vw-media-1791468942252-4107.jpeg'
     },
     {
       id: 'clone-watches',
@@ -24,7 +24,7 @@ export const CraftsmanshipSection: React.FC<CraftsmanshipSectionProps> = ({ cmsD
       subtitle: cmsData.cloneWatchesSubtitle || '1:1 Super Clone Engineering',
       icon: Shield,
       description: cmsData.cloneWatchesDesc || 'Meticulously crafted 1:1 super clones built with exact weight, genuine 904L stainless steel, ceramic bezel inserts, and clone-calibrated movements matching authentic dimensions down to the micron.',
-      image: cmsData.cloneWatchesImage || ''
+      image: cmsData.cloneWatchesImage || '/uploads/vw-media-1791469041937-9926.jpeg'
     },
     {
       id: 'copy-watches',
@@ -32,7 +32,7 @@ export const CraftsmanshipSection: React.FC<CraftsmanshipSectionProps> = ({ cmsD
       subtitle: cmsData.copyWatchesSubtitle || 'Accessible Style & Everyday Elegance',
       icon: Sparkles,
       description: cmsData.copyWatchesDesc || 'Stylish, high-value tribute designs combining iconic luxury aesthetics with reliable daily movements, durable stainless steel cases, and scratch-resistant crystals at accessible price points.',
-      image: cmsData.copyWatchesImage || ''
+      image: cmsData.copyWatchesImage || '/uploads/vw-media-1791469102846-3380.jpeg'
     }
   ];
 
@@ -100,6 +100,12 @@ export const CraftsmanshipSection: React.FC<CraftsmanshipSectionProps> = ({ cmsD
               <img
                 src={currentPillar.image}
                 alt={currentPillar.title}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('vw-media-1791468942252-4107.jpeg')) {
+                    target.src = '/uploads/vw-media-1791468942252-4107.jpeg';
+                  }
+                }}
                 className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
               />
             ) : (

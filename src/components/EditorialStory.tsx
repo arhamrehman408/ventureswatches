@@ -38,6 +38,12 @@ export const EditorialStory: React.FC<EditorialStoryProps> = ({ cmsData, onExplo
                   src={editorialImageSrc}
                   alt="Ventures Watches Curated Timepieces"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('vw-media-1791469933635-3621.jpeg')) {
+                      target.src = '/uploads/vw-media-1791469933635-3621.jpeg';
+                    }
+                  }}
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000"
                 />
               ) : (

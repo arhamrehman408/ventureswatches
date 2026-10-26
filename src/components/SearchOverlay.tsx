@@ -118,7 +118,17 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                     className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 p-4 rounded transition-all duration-300 cursor-pointer group flex items-center gap-4 hover-luxury-scale animate-slide-up"
                   >
                     <div className="w-16 h-20 bg-white/10 rounded flex-shrink-0 p-1 flex items-center justify-center overflow-hidden">
-                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                      <img
+                        src={(p.images && p.images[0]) || '/uploads/vw-media-1791470009099-2584.jpeg'}
+                        alt={p.name}
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                            target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                          }
+                        }}
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="text-[10px] uppercase tracking-widest text-amber-400 block font-medium">

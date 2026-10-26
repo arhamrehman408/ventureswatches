@@ -86,12 +86,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <img
                           src={item.product.images[0]}
                           alt={item.product.name}
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                              target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                            }
+                          }}
                           className="w-full h-full object-contain"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
-                          <span className="text-[10px] font-serif font-bold text-slate-400">VW</span>
-                        </div>
+                        <img
+                          src="/uploads/vw-media-1791470009099-2584.jpeg"
+                          alt={item.product.name}
+                          className="w-full h-full object-contain"
+                        />
                       )}
                     </div>
 

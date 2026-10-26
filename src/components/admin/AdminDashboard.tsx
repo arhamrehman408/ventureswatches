@@ -1703,14 +1703,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <Trash2 size={11} />
                         <span>Clear / Remove</span>
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setCmsForm({ ...cmsForm, heroTitle: 'VENTURES WATCHES' })}
-                        className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700 transition-colors"
-                        title="Reset to default title"
-                      >
-                        Reset Default
-                      </button>
                     </div>
                   </div>
                   <input
@@ -1746,14 +1738,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <Trash2 size={11} />
                         <span>Clear / Remove</span>
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setCmsForm({ ...cmsForm, heroSubtitle: '100% Authentic Watches & High-End Clones' })}
-                        className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700 transition-colors"
-                        title="Reset to default subtitle"
-                      >
-                        Reset Default
-                      </button>
                     </div>
                   </div>
                   <input
@@ -1788,14 +1772,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       >
                         <Trash2 size={11} />
                         <span>Clear / Remove</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCmsForm({ ...cmsForm, brandStatement: 'Featuring Timepieces from the World’s Finest Brands. ⌚✨' })}
-                        className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-700 transition-colors"
-                        title="Reset to default statement"
-                      >
-                        Reset Default
                       </button>
                     </div>
                   </div>

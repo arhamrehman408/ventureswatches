@@ -530,15 +530,17 @@ if (fs.existsSync(cmsDataFilePath)) {
   try {
     const savedCms = JSON.parse(fs.readFileSync(cmsDataFilePath, "utf-8"));
     cmsData = { ...cmsData, ...savedCms };
-    if (!cmsData.heroTitle) {
-      cmsData.heroTitle = 'VENTURES WATCHES';
-    }
-    if (!cmsData.heroSubtitle) {
-      cmsData.heroSubtitle = '100% Authentic Watches & High-End Clones';
-    }
-    if (!cmsData.brandStatement) {
-      cmsData.brandStatement = 'Featuring Timepieces from the World’s Finest Brands. ⌚✨';
-    }
+    cmsData.heroTitle = '';
+    cmsData.heroSubtitle = '';
+    cmsData.heroCtaText = '';
+    cmsData.heroSecondaryCtaText = '';
+    cmsData.heroBadgeText = '';
+    cmsData.brandStatement = '';
+    cmsData.heroShowTitle = false;
+    cmsData.heroShowSubtitle = false;
+    cmsData.heroShowStatement = false;
+    cmsData.heroShowPrimaryCta = false;
+    cmsData.heroShowSecondaryCta = false;
   } catch (e) {
     console.warn("Failed to load saved cms-data.json:", e);
   }
@@ -3172,6 +3174,17 @@ async function startServer() {
     }
     if (cloud.cms && typeof cloud.cms === 'object') {
       cmsData = { ...cmsData, ...cloud.cms };
+      cmsData.heroTitle = '';
+      cmsData.heroSubtitle = '';
+      cmsData.heroCtaText = '';
+      cmsData.heroSecondaryCtaText = '';
+      cmsData.heroBadgeText = '';
+      cmsData.brandStatement = '';
+      cmsData.heroShowTitle = false;
+      cmsData.heroShowSubtitle = false;
+      cmsData.heroShowStatement = false;
+      cmsData.heroShowPrimaryCta = false;
+      cmsData.heroShowSecondaryCta = false;
       try {
         fs.writeFileSync(cmsDataFilePath, JSON.stringify(cmsData, null, 2));
       } catch {}

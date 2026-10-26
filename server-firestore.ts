@@ -24,8 +24,27 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 const auth = getAuth(app);
 let isServerAuthenticated = false;
+let isFirestoreServerQuotaExhausted = false;
+
+export function isServerQuotaExhausted(): boolean {
+  return isFirestoreServerQuotaExhausted;
+}
+
+export function handleServerFirestoreError(err: any, context: string) {
+  const errMsg = String(err?.message || err || '');
+  const errCode = String(err?.code || '');
+  if (errCode.includes('resource-exhausted') || errMsg.includes('Quota limit exceeded') || errMsg.includes('resource-exhausted')) {
+    if (!isFirestoreServerQuotaExhausted) {
+      console.warn(`[SERVER FIRESTORE] Daily read/write quota reached on Google Cloud project. Seamlessly operating from local disk database.`);
+      isFirestoreServerQuotaExhausted = true;
+    }
+  } else {
+    console.debug(`[SERVER FIRESTORE ${context}]:`, err?.message || err);
+  }
+}
 
 export async function ensureServerAuth() {
+  if (isFirestoreServerQuotaExhausted) return;
   if (isServerAuthenticated && auth.currentUser) return;
   const adminEmail = process.env.ADMIN_EMAIL || "admin@ventureswatches.com";
   const adminPass = process.env.ADMIN_PASSWORD || "TayyabAsghar@262";
@@ -33,10 +52,7 @@ export async function ensureServerAuth() {
     await signInWithEmailAndPassword(auth, adminEmail, adminPass);
     isServerAuthenticated = true;
   } catch (e: any) {
-    // Suppress warning if email/password provider is not yet enabled in Firebase Console
-    if (e?.code !== "auth/operation-not-allowed") {
-      console.warn(`[SERVER FIREBASE AUTH] Sign-in notice (${e?.code || e?.message})`);
-    }
+    handleServerFirestoreError(e, 'auth');
   }
 }
 
@@ -140,6 +156,7 @@ export async function saveMediaBlob(
 export async function getMediaBlob(
   filename: string
 ): Promise<{ buffer: Buffer; contentType: string } | null> {
+  if (isFirestoreServerQuotaExhausted) return null;
   const cleanFilename = path.basename(filename);
 
   try {
@@ -153,7 +170,7 @@ export async function getMediaBlob(
     const meta = metaSnap.data() as MediaBlobMetadata;
     const totalChunks = meta.totalChunks || 1;
 
-    // Fetch all chunks concurrently in parallel for blazing speed
+    // Fetch all chunks concurrently in parallel
     const chunkPromises: Promise<any>[] = [];
     for (let i = 0; i < totalChunks; i++) {
       const chunkRef = doc(db, "media_chunks", `${cleanFilename}_chunk_${i}`);
@@ -204,7 +221,7 @@ export async function getMediaBlob(
       contentType: meta.contentType || "application/octet-stream"
     };
   } catch (err) {
-    console.error(`Error retrieving media blob ${cleanFilename}:`, err);
+    handleServerFirestoreError(err, `getMediaBlob(${cleanFilename})`);
     return null;
   }
 }
@@ -220,14 +237,17 @@ export async function syncAllDataFromFirestore(): Promise<{
   orders: any[] | null;
   deletions: any | null;
 }> {
+  if (isFirestoreServerQuotaExhausted) {
+    return { products: null, collections: null, cms: null, media: null, orders: null, deletions: null };
+  }
   try {
     const [prodSnap, colSnap, cmsSnap, medSnap, ordSnap, delSnap] = await Promise.all([
-      getDocs(collection(db, "products")).catch(() => null),
-      getDocs(collection(db, "collections")).catch(() => null),
-      getDoc(doc(db, "cms", "main")).catch(() => null),
-      getDocs(collection(db, "media")).catch(() => null),
-      getDocs(collection(db, "orders")).catch(() => null),
-      getDoc(doc(db, "system", "deletions")).catch(() => null)
+      getDocs(collection(db, "products")).catch(e => { handleServerFirestoreError(e, "syncProds"); return null; }),
+      getDocs(collection(db, "collections")).catch(e => { handleServerFirestoreError(e, "syncCols"); return null; }),
+      getDoc(doc(db, "cms", "main")).catch(e => { handleServerFirestoreError(e, "syncCms"); return null; }),
+      getDocs(collection(db, "media")).catch(e => { handleServerFirestoreError(e, "syncMed"); return null; }),
+      getDocs(collection(db, "orders")).catch(e => { handleServerFirestoreError(e, "syncOrd"); return null; }),
+      getDoc(doc(db, "system", "deletions")).catch(e => { handleServerFirestoreError(e, "syncDel"); return null; })
     ]);
 
     const products = prodSnap && !prodSnap.empty
@@ -263,6 +283,7 @@ export async function syncAllDataFromFirestore(): Promise<{
 
 // Single-entity persistence helpers
 export async function persistProductToCloud(product: any) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     if (product && product.id) {
@@ -275,11 +296,12 @@ export async function persistProductToCloud(product: any) {
       await setDoc(doc(db, "products", product.id), dataToPersist, { merge: true });
     }
   } catch (e) {
-    console.warn("persistProductToCloud error:", e);
+    handleServerFirestoreError(e, "persistProductToCloud");
   }
 }
 
 export async function deleteProductFromCloud(productId: string) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     await deleteDoc(doc(db, "products", productId));
@@ -292,64 +314,70 @@ export async function deleteProductFromCloud(productId: string) {
       await setDoc(delDocRef, { products: prods }, { merge: true });
     }
   } catch (e) {
-    console.warn("deleteProductFromCloud error:", e);
+    handleServerFirestoreError(e, "deleteProductFromCloud");
   }
 }
 
 export async function persistCMSToCloud(cms: any) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     await setDoc(doc(db, "cms", "main"), cms, { merge: true });
   } catch (e) {
-    console.warn("persistCMSToCloud error:", e);
+    handleServerFirestoreError(e, "persistCMSToCloud");
   }
 }
 
 export async function persistCollectionToCloud(collectionItem: any) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     if (collectionItem && collectionItem.id) {
       await setDoc(doc(db, "collections", collectionItem.id), collectionItem, { merge: true });
     }
   } catch (e) {
-    console.warn("persistCollectionToCloud error:", e);
+    handleServerFirestoreError(e, "persistCollectionToCloud");
   }
 }
 
 export async function deleteCollectionFromCloud(id: string) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     if (id) {
       await deleteDoc(doc(db, "collections", id));
     }
   } catch (e) {
-    console.warn("deleteCollectionFromCloud error:", e);
+    handleServerFirestoreError(e, "deleteCollectionFromCloud");
   }
 }
 
 export async function persistOrderToCloud(order: any) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     if (order && order.id) {
       await setDoc(doc(db, "orders", order.id), order, { merge: true });
     }
   } catch (e) {
-    console.warn("persistOrderToCloud error:", e);
+    handleServerFirestoreError(e, "persistOrderToCloud");
   }
 }
 
 export async function persistMediaItemToCloud(mediaItem: any) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     if (mediaItem && mediaItem.id) {
       await setDoc(doc(db, "media", mediaItem.id), mediaItem, { merge: true });
     }
   } catch (e) {
-    console.warn("persistMediaItemToCloud error:", e);
+    handleServerFirestoreError(e, "persistMediaItemToCloud");
   }
 }
 
 export async function deleteMediaItemFromCloud(mediaId: string) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     await deleteDoc(doc(db, "media", mediaId));
@@ -362,11 +390,12 @@ export async function deleteMediaItemFromCloud(mediaId: string) {
       await setDoc(delDocRef, { media }, { merge: true });
     }
   } catch (e) {
-    console.warn("deleteMediaItemFromCloud error:", e);
+    handleServerFirestoreError(e, "deleteMediaItemFromCloud");
   }
 }
 
 export async function deleteOrderFromCloud(orderId: string) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     await deleteDoc(doc(db, "orders", orderId));
@@ -379,16 +408,17 @@ export async function deleteOrderFromCloud(orderId: string) {
       await setDoc(delDocRef, { orders }, { merge: true });
     }
   } catch (e) {
-    console.warn("deleteOrderFromCloud error:", e);
+    handleServerFirestoreError(e, "deleteOrderFromCloud");
   }
 }
 
 export async function persistDeletionsToCloud(deletions: any) {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     await ensureServerAuth().catch(() => {});
     await setDoc(doc(db, "system", "deletions"), deletions, { merge: true });
   } catch (e) {
-    console.warn("persistDeletionsToCloud error:", e);
+    handleServerFirestoreError(e, "persistDeletionsToCloud");
   }
 }
 
@@ -396,25 +426,31 @@ export async function persistDeletionsToCloud(deletions: any) {
  * Ensures any uploaded file present on disk is also backed up in Firestore chunks
  */
 export async function syncMissingDiskFilesToFirestore(): Promise<void> {
+  if (isFirestoreServerQuotaExhausted) return;
   try {
     if (!fs.existsSync(uploadsDir)) return;
     const files = fs.readdirSync(uploadsDir);
     for (const f of files) {
+      if (isFirestoreServerQuotaExhausted) break;
       if (f.endsWith(".json") || f.startsWith(".")) continue;
-      const metaRef = doc(db, "media_files", f);
-      const metaSnap = await getDoc(metaRef);
-      if (!metaSnap.exists()) {
-        const fullPath = path.join(uploadsDir, f);
-        const buf = fs.readFileSync(fullPath);
-        const ext = path.extname(f).toLowerCase();
-        const isVid = ext === ".mp4" || ext === ".webm" || ext === ".mov";
-        const mime = isVid ? "video/mp4" : ext === ".png" ? "image/png" : "image/jpeg";
-        console.log(`[SYNC-DISK] Persisting missing media file ${f} (${buf.length} bytes) to Firestore...`);
-        await saveMediaBlob(f, buf, mime);
+      try {
+        const metaRef = doc(db, "media_files", f);
+        const metaSnap = await getDoc(metaRef);
+        if (!metaSnap.exists()) {
+          const fullPath = path.join(uploadsDir, f);
+          const buf = fs.readFileSync(fullPath);
+          const ext = path.extname(f).toLowerCase();
+          const isVid = ext === ".mp4" || ext === ".webm" || ext === ".mov";
+          const mime = isVid ? "video/mp4" : ext === ".png" ? "image/png" : "image/jpeg";
+          await saveMediaBlob(f, buf, mime);
+        }
+      } catch (err: any) {
+        handleServerFirestoreError(err, 'syncMissingDiskFilesToFirestore');
+        break;
       }
     }
   } catch (err) {
-    console.warn("[SYNC-DISK] Disk files sync warning:", err);
+    handleServerFirestoreError(err, "syncMissingDiskFilesToFirestore");
   }
 }
 

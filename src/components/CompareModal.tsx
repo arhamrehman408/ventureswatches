@@ -249,10 +249,20 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                     <img
                       src={watch1.images[0]}
                       alt={watch1.name}
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                          target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                        }
+                      }}
                       className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
                     />
                   ) : (
-                    <div className="text-slate-400 font-serif font-bold">VW</div>
+                    <img
+                      src="/uploads/vw-media-1791470009099-2584.jpeg"
+                      alt={watch1.name}
+                      className="max-h-full max-w-full object-contain"
+                    />
                   )}
                 </div>
 
@@ -325,10 +335,20 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                         <img
                           src={watch2.images[0]}
                           alt={watch2.name}
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                              target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                            }
+                          }}
                           className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
                         />
                       ) : (
-                        <div className="text-slate-400 font-serif font-bold">VW</div>
+                        <img
+                          src="/uploads/vw-media-1791470009099-2584.jpeg"
+                          alt={watch2.name}
+                          className="max-h-full max-w-full object-contain"
+                        />
                       )}
                     </div>
 
@@ -555,10 +575,20 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                           <img
                             src={p.images[0]}
                             alt={p.name}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                                target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+                              }
+                            }}
                             className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
                           />
                         ) : (
-                          <span className="text-xs font-serif font-bold text-slate-400">VW</span>
+                          <img
+                            src="/uploads/vw-media-1791470009099-2584.jpeg"
+                            alt={p.name}
+                            className="max-h-full max-w-full object-contain"
+                          />
                         )}
                       </div>
                       <h4 className="text-xs font-serif font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-amber-700">

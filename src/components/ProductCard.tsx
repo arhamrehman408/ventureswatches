@@ -22,36 +22,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [added, setAdded] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        threshold: 0.12,
-        rootMargin: '40px 0px -20px 0px'
-      }
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
+    setIsVisible(true);
   }, []);
 
   const rawImages = Array.isArray(product.images)
-    ? product.images.filter(img => img && !img.includes('unsplash.com') && !img.includes('photo-1522335789203') && !img.includes('photo-1524805444758'))
+    ? product.images.filter(img => Boolean(img && typeof img === 'string' && img.trim().length > 0))
     : [];
-  const mainImage = rawImages[0] || '';
+  const defaultFallbackImage = '/uploads/vw-media-1791470009099-2584.jpeg';
+  const mainImage = rawImages[0] || defaultFallbackImage;
   const hoverImage = rawImages[1] || mainImage;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
@@ -71,23 +53,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const formattedPrice = formatPrice(product.price);
   const formattedCompare = product.compareAtPrice ? formatPrice(product.compareAtPrice) : null;
 
-  // Stagger calculation for realistic waterfall drop when scrolling down
-  const staggerDelay = (index % 6) * 90;
-
   return (
     <div
       ref={cardRef}
       onClick={() => onSelect(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{
-        animationDelay: isVisible ? `${staggerDelay}ms` : '0ms',
-        opacity: isVisible ? undefined : 0,
-        transform: isVisible ? undefined : 'translateY(-30px)'
-      }}
-      className={`group relative bg-white border border-gray-100 rounded-sm overflow-hidden hover-luxury-card transition-all duration-500 cursor-pointer flex flex-col justify-between ${
-        isVisible ? 'animate-gravity-fall' : 'opacity-0'
-      }`}
+      className="group relative bg-white border border-gray-100 rounded-sm overflow-hidden hover-luxury-card transition-all duration-300 cursor-pointer flex flex-col justify-between opacity-100"
     >
       {/* Card Header Media Area */}
       <div className="relative aspect-[1/1] sm:aspect-[4/5] bg-[#F9FAFB] overflow-hidden flex items-center justify-center p-3 sm:p-6">
@@ -130,6 +102,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             alt={`${product.name} – Luxury Watch in Pakistan | Ventures Watches`}
             loading={index < 4 ? 'eager' : 'lazy'}
             decoding="async"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
+                target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
+              }
+            }}
             className="w-full h-full object-contain object-center transition-all duration-700 transform group-hover:scale-108"
           />
         ) : (

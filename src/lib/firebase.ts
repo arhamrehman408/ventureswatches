@@ -13,9 +13,11 @@ export const auth = getAuth(app);
 async function testConnection() {
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Error && error.message.includes('the client is offline')) {
       console.error("Please check your Firebase configuration.");
+    } else {
+      console.debug("Firestore test connection status:", error?.message || error);
     }
   }
 }

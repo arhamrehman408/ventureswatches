@@ -56,24 +56,24 @@ export const initialCMSData: CMSData = {
   facebookLink: 'https://www.facebook.com/share/1CJGTYKA22/?mibextid=wwXIfr',
 
   // 2. Hero Section
-  heroTitle: 'VENTURES WATCHES',
-  heroSubtitle: '100% Authentic Watches & High-End Clones',
+  heroTitle: '',
+  heroSubtitle: '',
   heroVideoUrl: '/uploads/vw-media-1791799307947-7910.mp4',
   heroImageUrl: '',
-  heroCtaText: 'DISCOVER COLLECTION',
-  heroSecondaryCtaText: 'OUR CATEGORIES',
-  heroBadgeText: '100% AUTHENTIC WATCHES & HIGH-END CLONES',
+  heroCtaText: '',
+  heroSecondaryCtaText: '',
+  heroBadgeText: '',
   heroBackgroundType: 'video',
   heroVideoOverlay: 'transparent',
   heroVideoOpacity: 0,
-  heroShowTitle: true,
-  heroShowSubtitle: true,
-  heroShowStatement: true,
-  heroShowPrimaryCta: true,
-  heroShowSecondaryCta: true,
+  heroShowTitle: false,
+  heroShowSubtitle: false,
+  heroShowStatement: false,
+  heroShowPrimaryCta: false,
+  heroShowSecondaryCta: false,
 
   // 3. Brand Manifesto
-  brandStatement: 'Featuring Timepieces from the World’s Finest Brands. ⌚✨',
+  brandStatement: '',
   brandAuthor: 'VW-Ventures Watches Pakistan',
 
   // 4. Curated Timepieces / Editorial Story Section
