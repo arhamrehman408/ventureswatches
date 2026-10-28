@@ -971,8 +971,8 @@ parsed.heroShowSecondaryCta = false;
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
                   {(() => {
                     const featured = products.filter(p => p.featured);
-                    const displayList = featured.length >= 20 ? featured : [...featured, ...products.filter(p => !p.featured)];
-                    return displayList.slice(0, 20);
+                    const displayList = featured.length >= 30 ? featured : [...featured, ...products.filter(p => !p.featured)];
+                    return displayList.slice(0, 30);
                   })().map((p, idx) => (
                     <ProductCard
                       key={p.id}
