@@ -115,6 +115,18 @@ export default function App() {
         if (customVideo && customVideo.trim().length > 0) {
           parsed.heroVideoUrl = customVideo.trim();
         }
+        // Permanently disable hero text on initial load
+parsed.heroTitle = '';
+parsed.heroSubtitle = '';
+parsed.heroCtaText = '';
+parsed.heroSecondaryCtaText = '';
+parsed.heroBadgeText = '';
+
+parsed.heroShowTitle = false;
+parsed.heroShowSubtitle = false;
+parsed.heroShowStatement = false;
+parsed.heroShowPrimaryCta = false;
+parsed.heroShowSecondaryCta = false;
         return { ...initialCMSData, ...parsed };
       }
       if (customVideo && customVideo.trim().length > 0) {
