@@ -21,6 +21,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   index = 0
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [loadedImageSrc, setLoadedImageSrc] = useState('');
   const [added, setAdded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -32,9 +33,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const rawImages = Array.isArray(product.images)
     ? product.images.filter(img => Boolean(img && typeof img === 'string' && img.trim().length > 0))
     : [];
-  const defaultFallbackImage = '/uploads/vw-media-1791470009099-2584.jpeg';
-  const mainImage = rawImages[0] || defaultFallbackImage;
-  const hoverImage = rawImages[1] || mainImage;
+const mainImage = rawImages[0] || '';
+const hoverImage = rawImages[1] || mainImage;
+const currentImage = isHovered ? hoverImage : mainImage;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -94,30 +95,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <Heart size={15} fill={isWishlisted ? 'currentColor' : 'none'} className={isWishlisted ? 'animate-pop-in' : ''} />
         </button>
+      
+{/* Watch Images */}
+{mainImage && (
+  <img
+    key={isHovered ? hoverImage : mainImage}
+    src={isHovered ? hoverImage : mainImage}
+    alt={`${product.name} – Luxury Watch in Pakistan | Ventures Watches`}
+    loading={index < 4 ? 'eager' : 'lazy'}
+    decoding="async"
+    onLoad={(e) => {
+      e.currentTarget.style.opacity = '1';
+    }}
+    onError={(e) => {
+      e.currentTarget.style.display = 'none';
+    }}
+    style={{ opacity: 0 }}
+    className="w-full h-full object-contain object-center transition-opacity duration-300"
+  />
+)}
 
-        {/* Watch Images */}
-        {mainImage ? (
-          <img
-            src={isHovered ? hoverImage : mainImage}
-            alt={`${product.name} – Luxury Watch in Pakistan | Ventures Watches`}
-            loading={index < 4 ? 'eager' : 'lazy'}
-            decoding="async"
-            onError={(e) => {
-              const target = e.currentTarget;
-              if (!target.src.includes('vw-media-1791470009099-2584.jpeg')) {
-                target.src = '/uploads/vw-media-1791470009099-2584.jpeg';
-              }
-            }}
-            className="w-full h-full object-contain object-center transition-all duration-700 transform group-hover:scale-108"
-          />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900/5 text-slate-400 p-2 sm:p-4 text-center group-hover:scale-105 transition-transform duration-500">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-slate-300 flex items-center justify-center mb-1.5 sm:mb-2">
-              <span className="text-[10px] sm:text-xs font-serif font-bold tracking-widest text-slate-500">VW</span>
-            </div>
-            <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-400 font-medium">Ventures Watch</span>
-          </div>
-        )}
 
         {/* Quick Action Overlay Bar (Desktop Hover & Mobile Accessible) */}
         <div className="hidden sm:flex absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 items-center justify-center gap-2">
