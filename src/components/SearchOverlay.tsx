@@ -29,16 +29,41 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
 
   if (!isOpen) return null;
 
-  const filteredProducts = query.trim()
-    ? products.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.sku.toLowerCase().includes(query.toLowerCase()) ||
-        p.collectionName.toLowerCase().includes(query.toLowerCase()) ||
-        p.category.toLowerCase().includes(query.toLowerCase()) ||
-        (p.specifications?.caseMaterial && p.specifications.caseMaterial.toLowerCase().includes(query.toLowerCase())) ||
-        (p.specifications?.movement && p.specifications.movement.toLowerCase().includes(query.toLowerCase()))
-      )
-    : [];
+const normalizedQuery = query.trim().toLowerCase();
+
+const queryTerms = normalizedQuery
+  .split(/\s+/)
+  .filter(Boolean);
+
+const filteredProducts = normalizedQuery
+  ? products.filter(p => {
+      const searchableValues = [
+        p.name,
+        p.sku,
+        p.slug,
+        p.description,
+        p.shortDescription,
+        p.collectionName,
+        p.category,
+        (p as any).brand,
+        (p as any).model,
+        (p as any).tags,
+        ...Object.values(p.specifications || {})
+      ];
+
+      const searchableText = searchableValues
+        .filter(value => value != null)
+        .map(value =>
+          Array.isArray(value) ? value.join(' ') : String(value)
+        )
+        .join(' ')
+        .toLowerCase();
+
+      return queryTerms.every(term =>
+        searchableText.includes(term)
+      );
+    })
+  : [];
 
   const categories = ['Original Watches', 'Clone Watches', 'Copy Watches'];
 
