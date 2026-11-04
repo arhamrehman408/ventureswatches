@@ -2251,6 +2251,31 @@ app.post("/api/chat", async (req, res) => {
 
     const lastMsg = messages[messages.length - 1]?.content || '';
     const qLower = String(lastMsg).toLowerCase().trim();
+    
+    // Filter Gemini's catalog according to the customer's stated budget.
+    const promptBudgetMatch =
+      qLower.match(/(?:under|below|within|up to|upto|budget|in|for|rs\.?|pkr)\s*(?:rs\.?|pkr)?\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar)?\b/i) ||
+      qLower.match(/\b(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar)\b/i);
+
+    let promptProducts = activeProducts;
+
+    if (promptBudgetMatch) {
+      const amount = Number(promptBudgetMatch[1].replace(/,/g, ''));
+      const unit = (promptBudgetMatch[2] || '').toLowerCase();
+      const budget = ['k', 'thousand', 'hazaar', 'hazar'].includes(unit)
+        ? amount * 1000
+        : amount;
+
+      if (Number.isFinite(budget) && budget > 0) {
+        promptProducts = activeProducts
+          .filter((p: any) => {
+            const price = Number(p.price);
+            return Number.isFinite(price) && price > 0 && price <= budget;
+          })
+          .sort((a: any, b: any) => Number(a.price) - Number(b.price));
+      }
+    }
+
 
     // Fast-path for instant audio checks (<5ms response for live voice calls)
     if (qLower === 'can you hear me?' || qLower === 'can you hear me' || qLower === 'are you there?' || qLower === 'are you there' || qLower.includes('sun rahe') || qLower.includes('awaz aa rahi')) {
@@ -2271,8 +2296,8 @@ app.post("/api/chat", async (req, res) => {
     }
 
     // Build real-time store catalog summary for strict grounding
-    const catalogSummary = activeProducts.length > 0
-      ? activeProducts.map((p: any, idx: number) => {
+    const catalogSummary = promptProducts.length > 0
+    ? promptProducts.map((p: any, idx: number) => {
           const specs = p.specifications || {};
           return `${idx + 1}. [${p.collectionName || 'Watch'}] "${p.name}" (SKU: ${p.sku || 'N/A'})
    - Price: PKR ${Number(p.price).toLocaleString()}
@@ -2342,7 +2367,7 @@ STRICT LIVE STORE INVENTORY GROUNDING:
 5. Best Story: Narrate the Rolex Submariner Deep Sea Special dive to 10,916 meters in the Mariana Trench on the bathyscaphe Trieste in 1960.
 6. No Jargon: Never use "horology" or "horological". Use "luxury watches", "timepieces", "watch collection".
 
-=== CURRENT LIVE STORE INVENTORY (${activeProducts.length} PRODUCTS) ===
+=== CURRENT LIVE STORE INVENTORY (${promptProducts.length} PRODUCTS) ===
 ${catalogSummary}
 
 === LIVE STORE COLLECTIONS ===
