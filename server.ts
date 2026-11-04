@@ -2063,6 +2063,45 @@ app.get("/api/exchange-rates", async (req, res) => {
 function generateFastCatalogAnswer(lastMsg: string, activeProducts: any[], isLiveCall: boolean): string {
   const q = (lastMsg || '').toLowerCase();
 
+  // Budget-based filtering: recommend only products within the customer's budget.
+  const budgetMatch =
+    q.match(/(?:under|below|within|up to|upto|budget|in|for|rs\.?|pkr)\s*(?:rs\.?|pkr)?\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar)?\b/i) ||
+    q.match(/\b(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar)\b/i);
+
+  if (budgetMatch) {
+    const amount = Number(budgetMatch[1].replace(/,/g, ''));
+    const unit = (budgetMatch[2] || '').toLowerCase();
+    const budget = ['k', 'thousand', 'hazaar', 'hazar'].includes(unit)
+      ? amount * 1000
+      : amount;
+
+    if (Number.isFinite(budget) && budget > 0) {
+      const matchingBudgetProducts = activeProducts
+        .filter(p => {
+          const price = Number(p.price);
+          return Number.isFinite(price) && price > 0 && price <= budget;
+        })
+        .sort((a, b) => Number(a.price) - Number(b.price))
+        .slice(0, 4);
+
+      if (matchingBudgetProducts.length === 0) {
+        return isLiveCall
+          ? `Sorry, I could not find any watches within PKR ${budget.toLocaleString()} in our current inventory.`
+          : `Sorry, we couldn't find any watches within **PKR ${budget.toLocaleString()}** in our current inventory. You may try a higher budget.`;
+      }
+
+      const productList = matchingBudgetProducts
+        .map((p, index) =>
+          `${index + 1}. ${p.name} — PKR ${Number(p.price).toLocaleString()}`
+        )
+        .join(isLiveCall ? '. ' : '\n');
+
+      return isLiveCall
+        ? `Here are ${matchingBudgetProducts.length} watches within your budget of PKR ${budget.toLocaleString()}: ${productList}.`
+        : `Here are the watches available within your budget of **PKR ${budget.toLocaleString()}**:\n\n${productList}\n\nThese prices are from our current store inventory.`;
+    }
+  }
+
   // 1. Audio check / "Can you hear me?"
   if (q.includes('hear me') || q.includes('can you hear') || q.includes('listening') || q.includes('sun rahe') || q.includes('awaz') || q.includes('hello')) {
     if (isLiveCall) {
