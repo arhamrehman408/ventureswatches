@@ -326,17 +326,52 @@ export const Chatbot: React.FC<ChatbotProps> = ({
     }
   };
 
+ 
   // Extract relevant products from store catalog
   const findRelevantProducts = (queryOrContent: string): Product[] => {
     if (!products || products.length === 0) return [];
-    const textLower = queryOrContent.toLowerCase();
 
+    const textLower = (queryOrContent || '').toLowerCase();
+
+    // Detect customer budget: 6K, 6k, 6000, 6 thousand, 6 hazar
+    const budgetMatch = textLower.match(
+      /(?:under|below|within|upto|up to|maximum|max|budget|in|around|near|for|rs\.?|pkr)?\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar|hajaar)?/i
+    );
+
+    let budget: number | null = null;
+
+    if (budgetMatch) {
+      const amount = Number(budgetMatch[1].replace(/,/g, ''));
+      const unit = (budgetMatch[2] || '').toLowerCase();
+
+      if (Number.isFinite(amount) && amount > 0) {
+        budget = unit === 'k' || unit === 'thousand' ||
+          unit === 'hazaar' || unit === 'hazar' || unit === 'hajaar'
+          ? amount * 1000
+          : amount;
+      }
+    }
+
+    // If a budget is mentioned, ONLY show products within that budget.
+    if (budget !== null) {
+      const budgetMatches = products
+        .filter(p => Number(p.price) > 0 && Number(p.price) <= budget!)
+        .sort((a, b) => Number(a.price) - Number(b.price));
+
+      // Never show random products if nothing matches the budget.
+      return budgetMatches.slice(0, 4);
+    }
+
+    // Match exact product names, SKUs, brands and collections.
     const directMatches = products.filter(p => {
       const name = (p.name || '').toLowerCase();
       const sku = (p.sku || '').toLowerCase();
       const col = (p.collectionName || '').toLowerCase();
+
       return (
-        name.length > 3 && (textLower.includes(name) || name.split(' ').some(w => w.length > 3 && textLower.includes(w))) ||
+        (name.length > 3 &&
+          (textLower.includes(name) ||
+            name.split(' ').some(w => w.length > 3 && textLower.includes(w)))) ||
         (sku && textLower.includes(sku)) ||
         (textLower.includes('clone') && col.includes('clone')) ||
         (textLower.includes('original') && col.includes('original')) ||
@@ -345,22 +380,14 @@ export const Chatbot: React.FC<ChatbotProps> = ({
     });
 
     if (directMatches.length > 0) {
-      return directMatches.slice(0, 3);
+      return directMatches.slice(0, 4);
     }
 
-    if (
-      textLower.includes('recommend') ||
-      textLower.includes('top') ||
-      textLower.includes('best') ||
-      textLower.includes('collection') ||
-      textLower.includes('price') ||
-      textLower.includes('watch')
-    ) {
-      return products.slice(0, 3);
-    }
-
+    // Do not return the latest products as random recommendations.
     return [];
   };
+
+
 
   // Instant, 100% accurate catalog-grounded answer generator for client-side fallback
   const getClientFallbackAnswer = (queryText: string, isVoice: boolean): string => {
@@ -368,6 +395,27 @@ export const Chatbot: React.FC<ChatbotProps> = ({
     const isUrdu = /[\u0600-\u06FF]/.test(queryText) ||
       /(\burdu\b|talk in urdu|speak in urdu|urdu mein|urdu me|urdu please|urdu bolo)/i.test(queryText) ||
       (speechLangRef.current === 'ur-PK' && /(\b(aap|hamari|ghari|ghariyan|qeemat|rupay|rabta|shukriya|tajweez)\b)/i.test(queryText));
+
+    // Budget-based product recommendation
+    const budgetProducts = findRelevantProducts(queryText);
+
+    const hasBudget = /\d+\s*(k|thousand|hazaar|hazar|hajaar)\b|\b(?:under|below|within|up to|upto)\s*\d/i.test(q);
+
+    if (hasBudget) {
+      if (budgetProducts.length === 0) {
+        return isUrdu
+          ? "Maazrat, hamari current inventory mein aap ke bataye hue budget ke andar koi watch available nahi hai. Aap apna budget thora increase kar sakte hain."
+          : "Sorry, we couldn't find any watches within that budget in our current store inventory. You may try increasing your budget.";
+      }
+
+      const productList = budgetProducts.map((w, index) =>
+        `${index + 1}. ${w.name} — PKR ${Number(w.price).toLocaleString()}`
+      ).join(isVoice ? '. ' : '\n');
+
+      return isUrdu
+        ? `Aap ke budget ke mutabiq hamari available watches yeh hain: ${productList}. Aap in mein se kisi bhi watch ko website se order kar sakte hain.`
+        : `Here are the watches available within your budget:\n\n${productList}\n\nYou can select any of these watches and order directly from our website.`;
+    }
 
     if (q.includes('hear me') || q.includes('can you hear') || q.includes('listening') || q.includes('sun rahe') || q.includes('awaz')) {
       if (isUrdu) {
