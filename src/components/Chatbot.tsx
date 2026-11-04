@@ -353,13 +353,18 @@ export const Chatbot: React.FC<ChatbotProps> = ({
     }
 
     // If a budget is mentioned, ONLY show products within that budget.
-    if (budget !== null) {
-      const budgetMatches = products
-        .filter(p => Number(p.price) > 0 && Number(p.price) <= budget!)
-        .sort((a, b) => Number(a.price) - Number(b.price));
+    
+if (budget !== null) {
+  const budgetMatches = products.filter(
+    p => Number(p.price) > 0 && Number(p.price) <= budget!
+  );
+
+  return budgetMatches;
+}
+
 
       // Never show random products if nothing matches the budget.
-      return budgetMatches.slice(0, 4);
+     return budgetMatches;
     }
 
     // Match exact product names, SKUs, brands and collections.
