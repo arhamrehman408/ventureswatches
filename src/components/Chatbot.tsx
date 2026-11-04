@@ -1374,15 +1374,45 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
                   </div>
 
                  
-                  Click={() => handleInspectProduct(prod)}
-                                  className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1 transition-all"
+                                                          {isBot && msg.suggestedProducts && msg.suggestedProducts.length > 0 && (
+                    <div className="w-full mt-3 pl-9 pr-2 space-y-2">
+                      <div className="text-[10px] uppercase font-mono tracking-widest text-amber-400 font-semibold">
+                        Recommended Watches:
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {msg.suggestedProducts.map((prod) => (
+                          <div
+                            key={prod.id}
+                            className="bg-[#071324] border border-amber-500/30 rounded-xl p-2.5 flex gap-2.5 items-center"
+                          >
+                            <img
+                              src={prod.images?.[0]}
+                              alt={prod.name}
+                              className="w-14 h-14 object-cover rounded-lg"
+                            />
+
+                            <div className="flex-1 min-w-0">
+                              <h5 className="text-xs font-semibold text-white truncate">
+                                {prod.name}
+                              </h5>
+
+                              <p className="text-[10px] text-amber-400 font-bold mt-1">
+                                PKR {Number(prod.price).toLocaleString()}
+                              </p>
+
+                              <div className="flex items-center gap-1.5 mt-2">
+                                <button
+                                  onClick={() => handleInspectProduct(prod)}
+                                  className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1"
                                 >
                                   <Eye size={10} />
                                   <span>360° View</span>
                                 </button>
+
                                 <button
                                   onClick={() => handleWhatsAppOrderProduct(prod)}
-                                  className="text-[10px] bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/40 flex items-center gap-1 transition-all"
+                                  className="text-[10px] bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/40 flex items-center gap-1"
                                 >
                                   <ExternalLink size={10} />
                                   <span>WhatsApp</span>
