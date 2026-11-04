@@ -328,69 +328,77 @@ export const Chatbot: React.FC<ChatbotProps> = ({
 
  
   // Extract relevant products from store catalog
-  const findRelevantProducts = (queryOrContent: string): Product[] => {
-    if (!products || products.length === 0) return [];
 
-    const textLower = (queryOrContent || '').toLowerCase();
+// Extract relevant products from store catalog
+const findRelevantProducts = (queryOrContent: string): Product[] => {
+  if (!products || products.length === 0) return [];
 
-    // Detect customer budget: 6K, 6k, 6000, 6 thousand, 6 hazar
-    const budgetMatch = textLower.match(
-      /(?:under|below|within|upto|up to|maximum|max|budget|in|around|near|for|rs\.?|pkr)?\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar|hajaar)?/i
+  const textLower = (queryOrContent || '').toLowerCase();
+
+  // Detect budget only when there is a clear budget indicator
+  const budgetMatch =
+    textLower.match(
+      /\b(?:under|below|within|upto|up\s*to|maximum|max|budget(?:\s+of)?|around|near|in)\s*(?:rs\.?|pkr)?\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar|hajaar)?\b/i
+    ) ||
+    textLower.match(
+      /\b(?:rs\.?|pkr)\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s*(k|thousand|hazaar|hazar|hajaar)?\b/i
+    ) ||
+    textLower.match(
+      /\b(\d+(?:\.\d+)?)\s*(k|thousand|hazaar|hazar|hajaar)\b/i
     );
 
-    let budget: number | null = null;
+  let budget: number | null = null;
 
-    if (budgetMatch) {
-      const amount = Number(budgetMatch[1].replace(/,/g, ''));
-      const unit = (budgetMatch[2] || '').toLowerCase();
+  if (budgetMatch) {
+    const amount = Number(budgetMatch[1].replace(/,/g, ''));
+    const unit = (budgetMatch[2] || '').toLowerCase();
 
-      if (Number.isFinite(amount) && amount > 0) {
-        budget = unit === 'k' || unit === 'thousand' ||
-          unit === 'hazaar' || unit === 'hazar' || unit === 'hajaar'
+    if (Number.isFinite(amount) && amount > 0) {
+      budget =
+        unit === 'k' ||
+        unit === 'thousand' ||
+        unit === 'hazaar' ||
+        unit === 'hazar' ||
+        unit === 'hajaar'
           ? amount * 1000
           : amount;
-      }
     }
+  }
 
-    // If a budget is mentioned, ONLY show products within that budget.
-    
-if (budget !== null) {
-  const budgetMatches = products.filter(
-    p => Number(p.price) > 0 && Number(p.price) <= budget!
-  );
-
-  return budgetMatches;
-}
-
-
-      // Never show random products if nothing matches the budget.
-     return budgetMatches;
-    }
-
-    // Match exact product names, SKUs, brands and collections.
-    const directMatches = products.filter(p => {
-      const name = (p.name || '').toLowerCase();
-      const sku = (p.sku || '').toLowerCase();
-      const col = (p.collectionName || '').toLowerCase();
-
-      return (
-        (name.length > 3 &&
-          (textLower.includes(name) ||
-            name.split(' ').some(w => w.length > 3 && textLower.includes(w)))) ||
-        (sku && textLower.includes(sku)) ||
-        (textLower.includes('clone') && col.includes('clone')) ||
-        (textLower.includes('original') && col.includes('original')) ||
-        (textLower.includes('copy') && col.includes('copy'))
-      );
+  // If a budget is detected, return ALL products within that budget.
+  if (budget !== null) {
+    return products.filter(p => {
+      const price = Number(p.price);
+      return Number.isFinite(price) && price > 0 && price <= budget!;
     });
+  }
 
-    if (directMatches.length > 0) {
-      return directMatches.slice(0, 4);
-    }
+  // Match exact product names, SKUs and collections.
+  const directMatches = products.filter(p => {
+    const name = (p.name || '').toLowerCase();
+    const sku = (p.sku || '').toLowerCase();
+    const col = (p.collectionName || '').toLowerCase();
 
-    // Do not return the latest products as random recommendations.
-    return [];
-  };
+    return (
+      (name.length > 3 &&
+        (textLower.includes(name) ||
+          name.split(' ').some(w => w.length > 3 && textLower.includes(w)))) ||
+      (sku && textLower.includes(sku)) ||
+      (textLower.includes('clone') && col.includes('clone')) ||
+      (textLower.includes('original') && col.includes('original')) ||
+      (textLower.includes('copy') && col.includes('copy'))
+    );
+  });
+
+  // Return ALL direct matches, without a 4-product limit.
+  if (directMatches.length > 0) {
+    return directMatches;
+  }
+
+  // Never show random products.
+  return [];
+};
+
 
 
 
@@ -1365,35 +1373,8 @@ if (budget !== null) {
                     </div>
                   </div>
 
-                  {/* Embedded Luxury Product Recommendation Cards */}
-                  {isBot && msg.suggestedProducts && msg.suggestedProducts.length > 0 && (
-                    <div className="w-full mt-3 pl-9 pr-2 space-y-2">
-                      <div className="text-[10px] uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-1.5">
-                        <Sparkles size={11} />
-                        <span>Recommended Timepieces in Collection:</span>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {msg.suggestedProducts.map((prod) => (
-                          <div
-                            key={prod.id}
-                            className="bg-[#071324] border border-amber-500/30 rounded-xl p-2.5 hover:border-amber-400 transition-all flex gap-2.5 items-center group shadow-md"
-                          >
-                            <img
-                              src={prod.images?.[0] || 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=300'}
-                              alt={prod.name}
-                              className="w-14 h-14 object-cover rounded-lg border border-slate-700 flex-shrink-0 group-hover:scale-105 transition-transform"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <h5 className="text-xs font-semibold text-white truncate group-hover:text-amber-300 transition-colors">
-                                {prod.name}
-                              </h5>
-                              <p className="text-[10px] text-amber-400 font-mono font-bold mt-0.5">
-                                PKR {Number(prod.price).toLocaleString()}
-                              </p>
-                              <div className="flex items-center gap-1.5 mt-1.5">
-                                <button
-                                  onClick={() => handleInspectProduct(prod)}
+                 
+                  Click={() => handleInspectProduct(prod)}
                                   className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1 transition-all"
                                 >
                                   <Eye size={10} />
