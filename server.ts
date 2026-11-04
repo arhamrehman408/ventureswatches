@@ -2076,13 +2076,12 @@ function generateFastCatalogAnswer(lastMsg: string, activeProducts: any[], isLiv
       : amount;
 
     if (Number.isFinite(budget) && budget > 0) {
-      const matchingBudgetProducts = activeProducts
-        .filter(p => {
-          const price = Number(p.price);
-          return Number.isFinite(price) && price > 0 && price <= budget;
-        })
-        .sort((a, b) => Number(a.price) - Number(b.price))
-        .slice(0, 4);
+     
+const matchingBudgetProducts = activeProducts.filter(p => {
+  const price = Number(p.price);
+  return Number.isFinite(price) && price > 0 && price <= budget;
+});
+
 
       if (matchingBudgetProducts.length === 0) {
         return isLiveCall
@@ -2354,6 +2353,17 @@ TEXT MESSAGES DIRECTIVE:
 `}
 
 STRICT LIVE STORE INVENTORY GROUNDING:
+
+BUDGET AND PRODUCT SELECTION RULES:
+- When a customer specifies a maximum budget, consider ALL products in the supplied live inventory whose actual PKR price is within that budget.
+- Never limit budget results to 4 products or only the cheapest products.
+- Do not automatically select the cheapest watches. Select relevant products across the available price range according to the customer's requirements.
+- When the customer asks for all watches within a budget, mention every matching product from the supplied inventory.
+- When the customer asks for recommendations, prioritize relevance to their requested brand, model, style, color, specifications and budget.
+- Never repeat the same products automatically if other relevant products are available.
+- Never invent products, prices, SKUs, specifications or stock information.
+- If the customer asks for all matching watches, do not silently omit matching products.
+
 1. ONLY RECOMMEND PRODUCTS IN CURRENT LIVE STORE INVENTORY BELOW.
 2. If a customer asks for a brand (e.g. Rolex, Cartier, Patek Philippe, AP, Omega):
    - If that brand/model is in the live inventory below, recommend ONLY that exact piece with its exact name, SKU, price in PKR, and specs.
