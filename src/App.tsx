@@ -901,12 +901,7 @@ parsed.heroShowSecondaryCta = false;
                     const isOriginal = col.id === 'col-1' || title.toLowerCase().includes('original');
                     const isClone = col.id === 'col-2' || title.toLowerCase().includes('clone');
                     const TierIcon = isOriginal ? Award : isClone ? Shield : Sparkles;
-                    const defaultTierImg = isOriginal
-                      ? '/uploads/vw-media-1787122972078-1919.jpeg'
-                      : isClone
-                      ? '/uploads/vw-media-1787122997494-6118.jpeg'
-                      : '/uploads/vw-media-1787122983955-2251.jpeg';
-                    const displayImage = col.image || defaultTierImg;
+                   const displayImage = (col.image || '').trim();
 
                     return (
                       <div
@@ -1033,12 +1028,7 @@ parsed.heroShowSecondaryCta = false;
                   const isOriginal = col.id === 'col-1' || title.toLowerCase().includes('original');
                   const isClone = col.id === 'col-2' || title.toLowerCase().includes('clone');
                   const TierIcon = isOriginal ? Award : isClone ? Shield : Sparkles;
-                  const defaultTierImg = isOriginal
-                    ? '/uploads/vw-media-1787122972078-1919.jpeg'
-                    : isClone
-                    ? '/uploads/vw-media-1787122997494-6118.jpeg'
-                    : '/uploads/vw-media-1787122983955-2251.jpeg';
-                  const displayImage = col.image || defaultTierImg;
+            const displayImage = (col.image || '').trim();
 
                   return (
                     <div
@@ -1051,12 +1041,7 @@ parsed.heroShowSecondaryCta = false;
                           <img
                             src={displayImage}
                             alt={title}
-                            onError={(e) => {
-                              const target = e.currentTarget;
-                              if (!target.src.includes('vw-media-1787122972078-1919.jpeg')) {
-                                target.src = defaultTierImg;
-                              }
-                            }}
+                           
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           />
                         ) : (
@@ -1209,12 +1194,7 @@ parsed.heroShowSecondaryCta = false;
                 <img
                   src={cmsData.aboutImage || cmsData.aboutImageUrl || '/uploads/vw-media-1787123315922-8585.jpg'}
                   alt="Ventures Atelier"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (!target.src.includes('vw-media-1787123315922-8585.jpg')) {
-                      target.src = '/uploads/vw-media-1787123315922-8585.jpg';
-                    }
-                  }}
+                
                   className="w-full h-full object-cover"
                 />
               </div>
