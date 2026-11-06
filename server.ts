@@ -283,47 +283,41 @@ app.use("/uploads", (req, res, next) => {
   next();
 }, express.static(uploadsDir));
 
+
 // Helper to normalize collection names
 function normalizeServerCollection(col: any) {
   if (!col) return col;
+
   let name = (col.name || '').trim();
   let slug = (col.slug || '').trim();
   const lower = name.toLowerCase();
   const idLower = (col.id || '').toLowerCase().trim();
 
-  let defaultImg = '';
   if (!name || lower === 'ventures automatic' || lower === 'automatic') {
     if (idLower === 'col-1') {
       name = 'Original Watches';
       slug = slug || 'original-watches';
-      defaultImg = '/uploads/vw-media-1787122972078-1919.jpeg';
     }
-  } else if (!name || lower === 'ventures chrono' || lower === 'chrono' || lower === 'chronograph') {
+  } else if (lower === 'ventures chrono' || lower === 'chrono' || lower === 'chronograph') {
     if (idLower === 'col-2') {
       name = 'Clone Watches';
       slug = slug || 'clone-watches';
-      defaultImg = '/uploads/vw-media-1787122997494-6118.jpeg';
     }
-  } else if (!name || lower === 'ventures classic' || lower === 'classic') {
+  } else if (lower === 'ventures classic' || lower === 'classic') {
     if (idLower === 'col-3') {
       name = 'Copy Watches';
       slug = slug || 'copy-watches';
-      defaultImg = '/uploads/vw-media-1787122983955-2251.jpeg';
     }
   } else if (!name && (idLower === 'col-4' || lower.includes('pouch') || lower.includes('accessories'))) {
     name = 'Pouches & Accessories';
     slug = slug || 'pouches-accessories';
-    defaultImg = '/uploads/vw-media-1787123090324-6787.jpeg';
   }
 
   if (!slug && name) {
     slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   }
 
-  let image = typeof col.image === 'string' ? col.image.trim() : '';
-  if (!image && defaultImg) {
-    image = defaultImg;
-  }
+  const image = typeof col.image === 'string' ? col.image.trim() : '';
 
   return { ...col, name: name || col.id, slug: slug || col.id, image };
 }
