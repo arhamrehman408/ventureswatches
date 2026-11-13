@@ -78,7 +78,6 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
       crystal: product?.specifications?.crystal || 'Scratch-Resistant Sapphire with AR Coating',
       strapMaterial: product?.specifications?.strapMaterial || 'Solid Steel / Hand-Stitched Leather',
       powerReserve: product?.specifications?.powerReserve || '72 Hours',
-      warranty: product?.specifications?.warranty || '3 Days Warranty',
       ...(product?.specifications || {})
     },
     seo: {
@@ -101,7 +100,7 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
           ...product.specifications,
           caseSize: product.specifications?.caseSize || product.specifications?.diameter || '',
           caseThickness: product.specifications?.caseThickness || product.specifications?.thickness || '',
-          warranty: product.specifications?.warranty || '3 Days Warranty'
+        
         }
       }));
     }
@@ -480,10 +479,9 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
       crystal: formData.specifications?.crystal || 'Scratch-Resistant Sapphire with AR Coating',
       strapMaterial: formData.specifications?.strapMaterial || 'Solid Steel / Hand-Stitched Leather',
       powerReserve: formData.specifications?.powerReserve || '72 Hours',
-      warranty: (formData.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty'),
       ...(formData.specifications || {})
     };
-
+delete completeSpecs.warranty;
     // Case Diameter (Optional) - only save if provided, do not force default
     if (formData.specifications?.caseSize && formData.specifications.caseSize.trim()) {
       completeSpecs.caseSize = formData.specifications.caseSize.trim();
@@ -682,7 +680,7 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                       <textarea
                         value={aiPrompt}
                         onChange={(e) => setAiPrompt(e.target.value)}
-                        placeholder="Speak or type watch details here... (e.g. 'Rolex Submariner Date Clone, 904L steel, ceramic black bezel, automatic movement, 185,000 rupees, 3 days warranty')"
+                        placeholder="Speak or type watch details here... (e.g. 'Rolex Submariner Date Clone, 904L steel, ceramic black bezel, automatic movement, 185,000 rupees')"
                         rows={3}
                         className="w-full h-full min-h-[85px] bg-black/40 border border-white/20 p-2.5 text-xs text-white placeholder:text-slate-400 rounded focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 resize-none font-sans"
                       />
@@ -1331,7 +1329,7 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                   <span>4. Watch Technical Specifications</span>
                 </h3>
                 <p className="text-[10px] text-gray-500 mt-0.5">
-                  Configure diameter (optional), thickness (optional), dial, crystal, strap, and warranty.
+                  Configure diameter (optional), thickness (optional), dial, crystal, and strap.
                 </p>
               </div>
             </div>
@@ -1406,39 +1404,6 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                 />
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-[10px] uppercase font-semibold text-gray-700">
-                    Warranty Period
-                  </label>
-                  <span className="text-[9px] text-emerald-700 font-medium">
-                    {(formData.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  value={formData.specifications?.warranty !== undefined ? formData.specifications.warranty.replace(/guarantee/gi, 'Warranty') : '3 Days Warranty'}
-                  onChange={(e) => handleSpecChange('warranty', e.target.value)}
-                  placeholder="e.g. 3 Days Warranty, 7 Days Warranty, 1 Month, 1 Year"
-                  className="w-full border border-gray-300 p-2.5 text-xs focus:border-[#0B192C] focus:outline-none font-medium text-[#0B192C]"
-                />
-                <div className="flex flex-wrap gap-1 mt-1.5">
-                  {['3 Days Warranty', '7 Days Warranty', '15 Days Warranty', '1 Month', '6 Months', '1 Year Warranty', '2 Years Warranty'].map((preset) => (
-                    <button
-                      key={preset}
-                      type="button"
-                      onClick={() => handleSpecChange('warranty', preset)}
-                      className={`text-[9px] px-2 py-0.5 border rounded cursor-pointer transition-colors ${
-                        formData.specifications?.warranty === preset
-                          ? 'bg-[#0B192C] text-white border-[#0B192C] font-semibold'
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
-                      }`}
-                    >
-                      {preset}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* Custom Extra Specifications */}
