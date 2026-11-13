@@ -73,7 +73,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({
   const initialWelcomeMessage: ChatMessage = {
     id: 'welcome-1',
     role: 'assistant',
-    content: `✨ **Welcome to VENTURES WATCHES Luxury Watch Advisor** ✨\n\nI am your dedicated personal watch specialist. I converse in English by default, and I will gladly speak in Urdu whenever you ask me to speak in Urdu!\n\n• **Watch Recommendations by Company**: Tell me any company (Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier, Tag Heuer, etc.) and I will suggest the best model logically according to specs!\n• **Specs & Engineering**: 904L steel, sapphire glass, ceramic bezel, power reserve & 3 days warranty\n• **Price Ranges & Budgets**: Clear tier breakdown from PKR 8,500 to PKR 185,000+\n• **Live Voice Call (English by Default)**: Speak with me live anytime using the **🎙️ Live Call** option. If you prefer Urdu, simply say *"Talk in Urdu"* or tap the language toggle!\n• **🛒 How to Order**:\n  1. **Order directly from this website**: Use "Add to Bag" / "Buy Now" for fast online checkout and 3 days checking warranty.\n  2. **Order via WhatsApp**: Message our team at **0319 2265524** (+92 319 2265524) for live wrist photos/videos.\n\n*How may I assist you with your luxury timepiece selection today?*`,
+    content: `✨ **Welcome to VENTURES WATCHES Luxury Watch Advisor** ✨\n\nI am your dedicated personal watch specialist. I converse in English by default, and I will gladly speak in Urdu whenever you ask me to speak in Urdu!\n\n• **Watch Recommendations by Company**: Tell me any company (Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier, Tag Heuer, etc.) and I will suggest the best model logically according to specs!\n• **Specs & Engineering**: 904L steel, sapphire glass, ceramic bezel, power reserve & 3 days warranty\n• **Price Ranges & Budgets**: Clear tier breakdown from PKR 8,500 to PKR 185,000+\n• **Live Voice Call (English by Default)**: Speak with me live anytime using the **🎙️ Live Call** option. If you prefer Urdu, simply say *"Talk in Urdu"* or tap the language toggle!\n• **🛒 How to Order**:\n  1. **Order directly from this website**: Use "Add to Bag" / "Buy Now" for fast online checkout.\n  2. **Order via WhatsApp**: Message our team at **0319 2265524** (+92 319 2265524) for live wrist photos/videos.\n\n*How may I assist you with your luxury timepiece selection today?*`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   };
 
@@ -470,12 +470,12 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
       const specs = w.specifications || {};
       if (isUrdu) {
         return isVoice
-          ? `Hamari collection se main ${w.name} tajweez karta hoon, qeemat PKR ${Number(w.price).toLocaleString()} hai 3 days warranty ke sath. Aap website se ya WhatsApp 0319 2265524 par order kar sakte hain.`
-          : `Hamari live store inventory se sab se behtareen ghari **${w.name}** (SKU: ${w.sku || 'VW-WATCH'}) hai:\n\n• **Qeemat**: **PKR ${Number(w.price).toLocaleString()}**\n• **Material**: ${specs.caseMaterial || '904L Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n• **Warranty**: ${(specs.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}\n\n**Aap is website se direct order kar sakte hain ya WhatsApp 0319 2265524 par order place kar sakte hain!**`;
+          ? `Hamari collection se main ${w.name} tajweez karta hoon, qeemat PKR ${Number(w.price).toLocaleString()} hai . Aap website se ya WhatsApp 0319 2265524 par order kar sakte hain.`
+          : `Hamari live store inventory se sab se behtareen ghari **${w.name}** (SKU: ${w.sku || 'VW-WATCH'}) hai:\n\n• **Qeemat**: **PKR ${Number(w.price).toLocaleString()}**\n• **Material**: ${specs.caseMaterial || '904L Steel'}\n• **Crystal**: ${specs.crystal  || }\n\n**Aap is website se direct order kar sakte hain ya WhatsApp 0319 2265524 par order place kar sakte hain!**`;
       }
       return isVoice
         ? `From our live inventory, I recommend the ${w.name} priced at PKR ${Number(w.price).toLocaleString()} with 3 Days Warranty. You can order directly from this website or via WhatsApp at 0319 2265524.`
-        : `From our live store inventory, we recommend the **${w.name}** (SKU: ${w.sku || 'VW-WATCH'}):\n\n• **Price**: **PKR ${Number(w.price).toLocaleString()}**\n• **Case & Material**: ${specs.caseMaterial || '904L Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n• **Warranty**: ${(specs.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now".\n2. **Order from WhatsApp**: Message **0319 2265524** (+92 319 2265524).`;
+        : `From our live store inventory, we recommend the **${w.name}** (SKU: ${w.sku || 'VW-WATCH'}):\n\n• **Price**: **PKR ${Number(w.price).toLocaleString()}**\n• **Case & Material**: ${specs.caseMaterial || '904L Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal|| )}\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now".\n2. **Order from WhatsApp**: Message **0319 2265524** (+92 319 2265524).`;
     }
 
     if (brand) {
@@ -496,11 +496,11 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
       if (isUrdu) {
         return isVoice
           ? `Hamari collection se main ${top.name} tajweez karta hoon jis ki qeemat PKR ${Number(top.price).toLocaleString()} hai. Aap is website se direct order kar sakte hain ya WhatsApp 0319 2265524 se order karein.`
-          : `Hamari current store collection se top recommended timepiece **${top.name}** (PKR ${Number(top.price).toLocaleString()}) hai:\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n• **Warranty**: ${(specs.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}\n\n**Order from this website directly or contact WhatsApp 0319 2265524!**`;
+          : `Hamari current store collection se top recommended timepiece **${top.name}** (PKR ${Number(top.price).toLocaleString()}) hai:\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n•: ${(specs.|| }\n\n**Order from this website directly or contact WhatsApp 0319 2265524!**`;
       }
       return isVoice
         ? `From our current collection, I recommend the ${top.name} priced at PKR ${Number(top.price).toLocaleString()} with 3 Days Warranty. You can order directly from this website or via WhatsApp at 0319 2265524.`
-        : `From our current store collection, the top recommended timepiece is the **${top.name}** (PKR ${Number(top.price).toLocaleString()}):\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n• **Warranty**: ${(specs.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}\n\n**How to Order**:\n1. **Order from this website**: Click "Add to Bag" / "Buy Now".\n2. **Order via WhatsApp**: Contact **0319 2265524**!`;
+        : `From our current store collection, the top recommended timepiece is the **${top.name}** (PKR ${Number(top.price).toLocaleString()}):\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n•: ${(specs. || )}\n\n**How to Order**:\n1. **Order from this website**: Click "Add to Bag" / "Buy Now".\n2. **Order via WhatsApp**: Contact **0319 2265524**!`;
     }
 
     return isVoice
@@ -780,7 +780,6 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
     { label: "📖 Rolex Deep Sea Story", query: "Tell me the famous Rolex Deep Sea dive story" },
     { label: "💎 Website & WhatsApp Order", query: "How do I order from this website or WhatsApp?" },
     { label: "💰 Store Prices in PKR", query: "What are your watch prices in PKR?" },
-    { label: "🛡️ 3-Days Warranty", query: "Tell me about your 3 days checking warranty" }
   ];
 
   // Text message handler for chat mode
@@ -1441,7 +1440,7 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
           <div className="px-4 py-1.5 bg-[#03070E] border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
             <span className="flex items-center gap-1.5">
               <ShieldCheck size={12} className="text-amber-400" />
-              <span>3-Day Checking Warranty • SadaPay Verified</span>
+              <span> Smooth Delivery • SadaPay Verified</span>
             </span>
             <a
               href={masterWhatsAppUrl}
