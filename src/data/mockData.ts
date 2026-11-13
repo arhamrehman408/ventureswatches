@@ -87,8 +87,6 @@ export const initialCMSData: CMSData = {
   editorialFeature1Text: 'Genuine timepieces from established and sought-after brands.',
   editorialFeature2Title: 'HIGH-END COLLECTION',
   editorialFeature2Text: '1:1 Super Clone Engineering matching authentic dimensions down to the micron.',
-  editorialFeature3Title: 'CHECKING WARRANTY',
-  editorialFeature3Text: 'Comprehensive 3-day verification warranty backing every timepiece.',
   editorialCtaText: 'EXPLORE CURATED CATALOGUE',
 
   // 5. Watch Categories / Craftsmanship Standards Section
@@ -98,7 +96,7 @@ export const initialCMSData: CMSData = {
   craftsmanshipImage: '',
   originalWatchesTitle: 'Original Watches',
   originalWatchesSubtitle: 'Authentic Luxury Watches',
-  originalWatchesDesc: 'Genuine, manufacturer-verified timepieces sourced directly from world-renowned heritage houses. Every piece includes authenticated serial numbers, official documentation, and factory warranty.',
+  originalWatchesDesc: 'Genuine, manufacturer-verified timepieces sourced directly from world-renowned heritage houses. Every piece includes authenticated serial numbers, official documentation.',
   originalWatchesImage: '/uploads/vw-media-1787123150539-6407.jpeg',
   cloneWatchesTitle: 'Clone Watches',
   cloneWatchesSubtitle: '1:1 Super Clone Engineering',
@@ -136,9 +134,7 @@ export const initialCMSData: CMSData = {
 
   // 9. Footer & Policies
   footerBio: 'VENTURES WATCHES (VW-VENTURES WATCHES) represents the pinnacle of luxury horology. 100% Authentic Watches And High End Clones In Pakistan. 🇵🇰 ⌚',
-  footerTrust1Title: '3-Day Checking Warranty',
-  footerTrust1Desc: 'Each timepiece is backed by our full 3-day checking warranty and quality warranty.',
-  footerTrust2Title: 'White-Glove Shipping',
+  footerTrust2Title: 'Smooth Shipping',
   footerTrust2Desc: 'Insured nationwide delivery with recipient verification and luxury presentation box.',
   footerTrust3Title: '100% Authentic & Clones',
   footerTrust3Desc: '100% Authentic Watches And High End Clones In Pakistan 🇵🇰 ⌚',
@@ -146,9 +142,7 @@ export const initialCMSData: CMSData = {
   footerNewsletterDesc: 'Receive private invitations to limited production drops, watch journal entries, and private previews.',
   footerCopyright: '© 2026 VENTURES WATCHES. All Rights Reserved. Crafted with precision horology.',
   privacyPolicy: 'We respect your absolute discretion. All client identities, phone numbers, and delivery details are confidential and encrypted.',
-  termsOfService: 'All purchases are subject to our verified 3-day checking warranty and physical inspection upon delivery.',
-  returnPolicy: 'We offer an immediate 3-day exchange or refund if your timepiece exhibits any mechanical defect or condition variance upon arrival.',
-  shippingPolicy: 'Dispatched via TCS Express Insured Priority Courier across all major cities of Pakistan within 24 to 48 hours.'
+  shippingPolicy: 'Dispatched via Insured Priority Courier across all major cities of Pakistan .'
 };
 
 export const initialOrders: Order[] = [];
