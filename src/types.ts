@@ -10,7 +10,6 @@ export interface WatchSpecs {
   strapMaterial?: string;
   waterResistance?: string;
   powerReserve?: string;
-  warranty: string;
   [key: string]: any;
 }
 
