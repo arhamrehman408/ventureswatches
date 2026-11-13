@@ -168,9 +168,11 @@ const currentImage = isHovered ? hoverImage : mainImage;
           <h3 className="text-xs sm:text-sm font-serif font-medium text-[#0B192C] group-hover:text-amber-600 transition-colors line-clamp-1 mt-0.5">
             {product.name}
           </h3>
-          <p className="text-[11px] sm:text-xs text-gray-500 line-clamp-1 mt-0.5 font-light">
-            {product.specifications?.caseSize ? `${product.specifications.caseSize} • ` : ''}{(product.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}
-          </p>
+         {product.specifications?.caseSize && (
+  <p className="text-[11px] sm:text-xs text-gray-500 line-clamp-1 mt-0.5 font-light">
+    {product.specifications.caseSize}
+  </p>
+)}
         </div>
 
         {/* Price & Stock */}
