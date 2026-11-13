@@ -2206,7 +2206,7 @@ const matchingBudgetProducts = activeProducts.filter(p => {
     if (isLiveCall) {
       return `From our current collection, I recommend the ${topWatch.name} for PKR ${Number(topWatch.price).toLocaleString()}. You can order directly from this website or order via WhatsApp at 0319 2265524.`;
     }
-    return `From our current store collection, the top recommended timepiece is the **${topWatch.name}** (PKR ${Number(topWatch.price).toLocaleString()}):\n\n• **Case & Material**: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n• : ${spec || }\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now" for direct checkout.\n2. **Order from WhatsApp**: Contact our WhatsApp desk at **0319 2265524** for custom requests or video inquiry.`;
+    return `From our current store collection, the top recommended timepiece is the **${topWatch.name}** (PKR ${Number(topWatch.price).toLocaleString()}):\n\n• **Case & Material**: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n\n**How to Order**::\n1. **Order from this website**: Use "Add to Bag" / "Buy Now" for direct checkout.\n2. **Order from WhatsApp**: Contact our WhatsApp desk at **0319 2265524** for custom requests or video inquiry.`;
   }
 
   if (isLiveCall) {
