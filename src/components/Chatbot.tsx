@@ -500,7 +500,7 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
       }
       return isVoice
         ? `From our current collection, I recommend the ${top.name} priced at PKR ${Number(top.price).toLocaleString()} with 3 Days Warranty. You can order directly from this website or via WhatsApp at 0319 2265524.`
-        : `From our current store collection, the top recommended timepiece is the **${top.name}** (PKR ${Number(top.price).toLocaleString()}):\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n•: ${(specs. || )}\n\n**How to Order**:\n1. **Order from this website**: Click "Add to Bag" / "Buy Now".\n2. **Order via WhatsApp**: Contact **0319 2265524**!`;
+        : `From our current store collection, the top recommended timepiece is the **${top.name}** (PKR ${Number(top.price).toLocaleString()}):\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n• **Strap**: ${specs.strapMaterial || 'Stainless Steel'}\n\n**How to Order**:\n1. **Order from this website**: Click "Add to Bag" / "Buy Now".\n2. **Order via WhatsApp**: Contact **0319 2265524**!`;
     }
 
     return isVoice
