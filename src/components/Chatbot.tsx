@@ -496,7 +496,7 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
       if (isUrdu) {
         return isVoice
           ? `Hamari collection se main ${top.name} tajweez karta hoon jis ki qeemat PKR ${Number(top.price).toLocaleString()} hai. Aap is website se direct order kar sakte hain ya WhatsApp 0319 2265524 se order karein.`
-          : `Hamari current store collection se top recommended timepiece **${top.name}** (PKR ${Number(top.price).toLocaleString()}) hai:\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n•: ${(specs.|| }\n\n**Order from this website directly or contact WhatsApp 0319 2265524!**`;
+          : `Hamari current store collection se top recommended timepiece **${top.name}** (PKR ${Number(top.price).toLocaleString()}) hai:\n\n• **Case**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || 'Sapphire Crystal'}\n• **Strap**: ${specs.strapMaterial || 'Stainless Steel'}\n\n**Order from this website directly or contact WhatsApp 0319 2265524!**`;
       }
       return isVoice
         ? `From our current collection, I recommend the ${top.name} priced at PKR ${Number(top.price).toLocaleString()} with 3 Days Warranty. You can order directly from this website or via WhatsApp at 0319 2265524.`
