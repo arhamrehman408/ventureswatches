@@ -368,9 +368,6 @@ function normalizeServerProduct(p: any) {
   if (specifications.thickness && !specifications.caseThickness) {
     specifications.caseThickness = specifications.thickness;
   }
-  if (!specifications.warranty) {
-    specifications.warranty = '3 Days Guarantee';
-  }
 
   return { ...p, name, collectionName, collectionId, category, slug, sku, images: cleanImages, compareAtPrice, specifications };
 }
@@ -1406,13 +1403,7 @@ app.post("/api/orders/:id/send-confirmation-email", requireAdmin, (req, res) => 
             </div>
             ` : ''}
 
-            <!-- 3-Day Guarantee & Concierge Help -->
-            <div style="text-align: center; padding-top: 10px;">
-              <p style="font-size: 12px; color: #94A3B8; margin: 0 0 16px 0;">
-                All timepieces include our signature <strong>3 Days Guarantee</strong>.
-              </p>
-              <a href="https://wa.me/923192265524?text=${encodeURIComponent(`Hello Ventures Watches, I am inquiring about my confirmed order #${order.orderNumber}`)}" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 600; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-size: 12px; letter-spacing: 0.5px;">
-                💬 Contact WhatsApp Concierge (+92 319 2265524)
+                       💬 Contact WhatsApp Concierge (+92 319 2265524)
               </a>
             </div>
           </td>
@@ -1421,7 +1412,7 @@ app.post("/api/orders/:id/send-confirmation-email", requireAdmin, (req, res) => 
         <!-- Footer -->
         <tr>
           <td style="background-color: #070F1E; padding: 20px 24px; text-align: center; border-top: 1px solid #1E293B; font-size: 11px; color: #64748B;">
-            © ${new Date().getFullYear()} Ventures Watches. All Rights Reserved. Luxury Watches Guaranteed.<br/>
+            © ${new Date().getFullYear()} Ventures Watches. All Rights Reserved.<br/>
             Karachi, Pakistan • Official SadaPay Settlement Account: 03192265524 (Muhammad Tayyab Asghar)
           </td>
         </tr>
@@ -2122,9 +2113,9 @@ const matchingBudgetProducts = activeProducts.filter(p => {
   // 4. Ordering & Payments
   if (q.includes('order') || q.includes('buy') || q.includes('kharid') || q.includes('purchase') || q.includes('kaise') || q.includes('sadapay') || q.includes('payment') || q.includes('bank')) {
     if (isLiveCall) {
-      return "You can order directly through our store checkout or via WhatsApp at 0319 2265524. We accept SadaPay, bank transfer, and cards, backed by our 3 Days Guarantee.";
+      return "You can order directly through our store checkout or via WhatsApp at 0319 2265524. We accept SadaPay, bank transfer, and cards.";
     }
-    return "Here is how to **Order & Pay**:\n\n1. **Browse or Search**: Explore Original, Clone, and Copy tiers in our store.\n2. **Inspect 360°**: Click any watch to view interactive 360° rotation and watch specifications.\n3. **Add to Bag**: Click 'Add to Bag' and proceed to Checkout.\n4. **Payment**: We accept SadaPay (03192265524 - Muhammad Tayyab Asghar), Direct Bank Transfer, or Online Card.\n5. **WhatsApp Ordering**: You can also order directly via WhatsApp at **0319 2265524**!\n\nDelivery takes 2-4 business days across Pakistan with 3 Days Guarantee.";
+    return "Here is how to **Order & Pay**:\n\n1. **Browse or Search**: Explore Original, Clone, and Copy tiers in our store.\n2. **Inspect 360°**: Click any watch to view interactive 360° rotation and watch specifications.\n3. **Add to Bag**: Click 'Add to Bag' and proceed to Checkout.\n4. **Payment**: We accept SadaPay (03192265524 - Muhammad Tayyab Asghar), Direct Bank Transfer, or Online Card.\n5. **WhatsApp Ordering**: You can also order directly via WhatsApp at **0319 2265524**!\n\nDelivery takes 2-4 business days across Pakistan.";
   }
 
   // 5. Prices & Ranges
@@ -2175,12 +2166,12 @@ const matchingBudgetProducts = activeProducts.filter(p => {
     const specs = best.specifications || {};
     if (isUrduQuery) {
       if (isLiveCall) {
-        return `Hamari live collection mein se main aap ko ${best.name} tajweez karta hoon jis ki qeemat PKR ${Number(best.price).toLocaleString()} hai aur 3 days guarantee shaamil hai. Aap hamari is website se direct order kar sakte hain ya WhatsApp 0319 2265524 par bhi rabta kar sakte hain.`;
+        return `Hamari live collection mein se main aap ko ${best.name} tajweez karta hoon jis ki qeemat PKR ${Number(best.price).toLocaleString()} hai . Aap hamari is website se direct order kar sakte hain ya WhatsApp 0319 2265524 par bhi rabta kar sakte hain.`;
       }
       return `Hamari live store inventory se sab se behtareen ghari **${best.name}** (SKU: ${best.sku || 'VW-WATCH'}) hai:\n\n• **Qeemat**: **PKR ${Number(best.price).toLocaleString()}**\n• **Case & Material**: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n• **Guarantee**: ${specs.warranty || '3 Days Guarantee'}\n• **Stock Status**: ${best.stock > 0 ? `${best.stock} units available` : 'Available to order'}\n\n**Order Karne Ka Tareeqa**:\n1. **Is Website se Order**: "Add to Bag" / "Buy Now" par click karein.\n2. **WhatsApp se Order**: Hamare WhatsApp number **0319 2265524** (+92 319 2265524) par rabta karein.`;
     }
     if (isLiveCall) {
-      return `From our live inventory, I recommend the ${best.name} priced at PKR ${Number(best.price).toLocaleString()}. It includes our 3 Days Guarantee. You can order directly from this website or order via WhatsApp at 0319 2265524.`;
+      return `From our live inventory, I recommend the ${best.name} priced at PKR ${Number(best.price).toLocaleString()}. You can order directly from this website or order via WhatsApp at 0319 2265524.`;
     }
     return `From our live store inventory, we recommend the **${best.name}** (SKU: ${best.sku || 'VW-WATCH'}):\n\n• **Price**: **PKR ${Number(best.price).toLocaleString()}**\n• **Collection Tier**: ${best.collectionName || 'Featured Collection'}\n• **Case & Material**: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n• **Guarantee**: ${specs.warranty || '3 Days Guarantee'}\n• **Stock Status**: ${best.stock > 0 ? `${best.stock} units available in store` : 'Available to order'}\n\n**How to Order**:\n1. **Order from this website**: Click "Add to Bag" / "Buy Now" on the timepiece for instant insured delivery.\n2. **Order from WhatsApp**: Send a message to **0319 2265524** (+92 319 2265524) for video verification & instant concierge help.`;
   }
@@ -2213,9 +2204,9 @@ const matchingBudgetProducts = activeProducts.filter(p => {
       return `Hamari store collection mein se top recommended timepiece **${topWatch.name}** (PKR ${Number(topWatch.price).toLocaleString()}) hai:\n\n• **Material**: ${specs.caseMaterial || '904L Stainless Steel'}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n• **Guarantee**: ${specs.warranty || '3 Days Guarantee'}\n\n**Order Karne Ka Tareeqa**:\n1. **Is Website se Order**: "Add to Bag" / "Buy Now" se fori checkout karein.\n2. **WhatsApp se Order**: Hamare WhatsApp **0319 2265524** par message karein.`;
     }
     if (isLiveCall) {
-      return `From our current collection, I recommend the ${topWatch.name} for PKR ${Number(topWatch.price).toLocaleString()} with 3 Days Guarantee. You can order directly from this website or order via WhatsApp at 0319 2265524.`;
+      return `From our current collection, I recommend the ${topWatch.name} for PKR ${Number(topWatch.price).toLocaleString()}. You can order directly from this website or order via WhatsApp at 0319 2265524.`;
     }
-    return `From our current store collection, the top recommended timepiece is the **${topWatch.name}** (PKR ${Number(topWatch.price).toLocaleString()}):\n\n• **Case & Material**: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n• **Guarantee**: ${specs.warranty || '3 Days Guarantee'}\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now" for direct checkout.\n2. **Order from WhatsApp**: Contact our WhatsApp desk at **0319 2265524** for custom requests or video inquiry.`;
+    return `From our current store collection, the top recommended timepiece is the **${topWatch.name}** (PKR ${Number(topWatch.price).toLocaleString()}):\n\n• **Case & Material**: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || specs.glass || 'Sapphire Crystal'}\n• : ${spec || }\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now" for direct checkout.\n2. **Order from WhatsApp**: Contact our WhatsApp desk at **0319 2265524** for custom requests or video inquiry.`;
   }
 
   if (isLiveCall) {
@@ -2296,7 +2287,6 @@ app.post("/api/chat", async (req, res) => {
    - Price: PKR ${Number(p.price).toLocaleString()}
    - Case & Material: ${specs.caseMaterial || '904L Stainless Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` | Thickness: ${specs.caseThickness}` : ''}
    - Crystal/Glass: ${specs.crystal || specs.glass || 'Sapphire Crystal'}
-   - Guarantee: ${specs.warranty || '3 Days Guarantee'}
    - Category: ${p.category || 'Timepiece'}
    - Status: ${p.stock > 0 ? `${p.stock} units in stock` : 'Available to order'}`;
         }).join('\n\n')
@@ -2325,7 +2315,7 @@ LANGUAGE & DEFAULT ENGLISH DIRECTIVE (CRITICAL):
 
 MANDATORY DUAL ORDERING DIRECTIVE (ALWAYS TELL HOW TO ORDER):
 - ALWAYS instruct and remind the customer that they can order in TWO convenient ways:
-  1) ORDER FROM THIS WEBSITE: Click "Add to Bag" or "Buy Now" on the watch page for direct online checkout and insured delivery with 3 days checking warranty.
+  1) ORDER FROM THIS WEBSITE: Click "Add to Bag" or "Buy Now" on the watch page for direct online checkout and insured delivery .
   2) ORDER FROM WHATSAPP: Send a message to our official WhatsApp at 0319 2265524 (+92 319 2265524) for live wrist videos and direct assistance.
 - In Urdu: "Aap is website se direct order kar sakte hain ya hamare WhatsApp 0319 2265524 par message kar ke bhi order place kar sakte hain."
 - In English: "You can order directly from this website or place your order via WhatsApp at 0319 2265524."
@@ -2337,7 +2327,7 @@ LIVE CALL DIRECTIVE (SPOKEN VOICE):
 - Speak naturally and elegantly in 1 to 2 short sentences (UNDER 35 WORDS TOTAL).
 - ABSOLUTELY ZERO MARKDOWN: Never use asterisks (**), hashes (##), bullets (•), brackets, or links. Output plain spoken words only.
 - If answering in Urdu, use proper Pakistani Urdu pronunciation and cadence.
-- Mention exact watch name, PKR price, key spec (904L steel, sapphire glass, 3 days guarantee), and that they can order from this website or via WhatsApp at 0319 2265524.
+- Mention exact watch name, PKR price, key spec (904L steel, sapphire glass), and that they can order from this website or via WhatsApp at 0319 2265524.
 ` : `
 TEXT MESSAGES DIRECTIVE:
 - The customer is chatting via text messages.
@@ -2365,7 +2355,7 @@ BUDGET AND PRODUCT SELECTION RULES:
      Explicitly state: "We do not currently have [Brand] in our ready store inventory. We strictly show and recommend only the timepieces currently active in our store."
      Then list the available pieces, and offer custom sourcing via WhatsApp at 0319 2265524 (+92 319 2265524).
 3. If asked to suggest the best watch:
-   Select the highest-spec piece from the live inventory below and explain logically based on its specifications (904L steel, sapphire crystal, 3 days guarantee).
+   Select the highest-spec piece from the live inventory below and explain logically based on its specifications (904L steel, sapphire crystal).
 4. Audio Check: If asked "Can you hear me?" or in Urdu "Sun rahe hain? / Awaz aa rahi hai?":
    Reply: "Yes, I can hear you loud and clear! I am your Ventures Watches advisor. You can order directly from this website or via WhatsApp at 0319 2265524." (or in Urdu: "Jee haan, main aap ko bilkul saaf sun sakta hoon! Main Ventures Watches ka luxury watch advisor hoon. Aap is website se ya WhatsApp 0319 2265524 se order kar sakte hain.")
 5. Best Story: Narrate the Rolex Submariner Deep Sea Special dive to 10,916 meters in the Mariana Trench on the bathyscaphe Trieste in 1960.
@@ -2592,11 +2582,11 @@ function createFallbackProductDraft(userPromptRaw: string, clientCollections: an
       strapMaterial: 'Solid Stainless Steel / Genuine Leather',
       waterResistance: '50m - 100m Water Resistant',
       powerReserve: '48 Hours',
-      warranty: '3 Days Checking Guarantee'
+     
     },
     seo: {
       metaTitle: `${name} in Pakistan | Ventures Watches`,
-      metaDescription: `Buy ${name} online in Pakistan with 3 days checking guarantee.`
+      metaDescription: `Buy ${name} online in Pakistan .`
     }
   };
 }
@@ -2664,7 +2654,7 @@ You MUST respond with a single valid JSON object strictly matching this structur
   "featured": true,
   "newArrival": true,
   "shortDescription": "One compelling, authoritative luxury sentence describing the timepiece.",
-  "description": "Comprehensive multi-paragraph luxury overview detailing the dial finishing, bezel operation, movement accuracy, stainless steel grade, and wrist presence. Always mention 3 Days Checking Guarantee and insured nationwide delivery.",
+  "description": "Comprehensive multi-paragraph luxury overview detailing the dial finishing, bezel operation, movement accuracy, stainless steel grade, and wrist presence. insured nationwide delivery.",
   "specifications": {
     "movement": "e.g. Asian 2824 / Japanese Miyota 8215 Automatic Movement / Quartz Chronograph",
     "caseMaterial": "e.g. 904L Corrosion-Resistant Stainless Steel or 316L Solid Steel",
@@ -2675,7 +2665,6 @@ You MUST respond with a single valid JSON object strictly matching this structur
     "strapMaterial": "Solid 904L Steel Bracelet with Folding Clasp / Genuine Hand-Stitched Leather",
     "waterResistance": "100 Meters / 10 ATM (Screw-down Crown)",
     "powerReserve": "48 to 72 Hours",
-    "warranty": "3 Days Checking Guarantee"
   },
   "seo": {
     "metaTitle": "Watch Name in Pakistan | Ventures Watches",
