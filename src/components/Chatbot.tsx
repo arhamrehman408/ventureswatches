@@ -475,7 +475,7 @@ const findRelevantProducts = (queryOrContent: string): Product[] => {
       }
       return isVoice
         ? `From our live inventory, I recommend the ${w.name} priced at PKR ${Number(w.price).toLocaleString()} with 3 Days Warranty. You can order directly from this website or via WhatsApp at 0319 2265524.`
-        : `From our live store inventory, we recommend the **${w.name}** (SKU: ${w.sku || 'VW-WATCH'}):\n\n• **Price**: **PKR ${Number(w.price).toLocaleString()}**\n• **Case & Material**: ${specs.caseMaterial || '904L Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal|| )}\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now".\n2. **Order from WhatsApp**: Message **0319 2265524** (+92 319 2265524).`;
+        : `From our live store inventory, we recommend the **${w.name}** (SKU: ${w.sku || 'VW-WATCH'}):\n\n• **Price**: **PKR ${Number(w.price).toLocaleString()}**\n• **Case & Material**: ${specs.caseMaterial || '904L Steel'}${specs.caseSize ? ` (${specs.caseSize})` : ''}${specs.caseThickness ? ` • Thickness: ${specs.caseThickness}` : ''}\n• **Crystal**: ${specs.crystal || 'Scratch-Resistant Sapphire'}\n\n**How to Order**:\n1. **Order from this website**: Use "Add to Bag" / "Buy Now".\n2. **Order from WhatsApp**: Message **0319 2265524** (+92 319 2265524).`;
     }
 
     if (brand) {
