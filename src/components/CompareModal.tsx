@@ -152,11 +152,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
       key: 'powerReserve',
       getValue: (p) => p.specifications?.powerReserve || '40 - 48 Hours'
     },
-    {
-      label: 'Warranty',
-      key: 'warranty',
-      getValue: (p) => (p.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')
-    },
+    
     {
       label: 'Stock Status',
       key: 'stock',
@@ -476,12 +472,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
           )}
         </div>
 
-        {/* Footer Warranty Bar */}
-        <div className="px-5 py-3 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-600 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <ShieldCheck size={16} className="text-amber-600" />
-            <span>All timepieces include 3 Days Warranty, Velvet Vault Box & Authenticity Seal</span>
-          </div>
+     
           <button
             onClick={onClose}
             className="py-1.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded transition-colors"
