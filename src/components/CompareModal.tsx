@@ -480,7 +480,6 @@ export const CompareModal: React.FC<CompareModalProps> = ({
             Close Comparison
           </button>
         </div>
-      </div>
 
       {/* Embedded Watch Selector Popup Overlay */}
       {activeSlotSelecting && (
