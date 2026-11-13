@@ -115,21 +115,7 @@ export const EditorialStory: React.FC<EditorialStoryProps> = ({ cmsData, onExplo
                 </div>
               </div>
 
-              {(cmsData.editorialFeature3Title || cmsData.editorialFeature3Text) && (
-                <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors duration-300">
-                  <div className="p-2.5 bg-white/10 rounded-full text-amber-400 shrink-0">
-                    <Sparkles size={20} />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
-                      {cmsData.editorialFeature3Title || 'CHECKING WARRANTY'}
-                    </h4>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {cmsData.editorialFeature3Text?.replace(/7-day/gi, '3-day').replace(/7 days/gi, '3 days') || 'Comprehensive 3-day verification warranty backing every timepiece.'}
-                    </p>
-                  </div>
-                </div>
-              )}
+            
             </div>
 
             <div className="pt-4">
