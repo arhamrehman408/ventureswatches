@@ -108,9 +108,8 @@ export function normalizeProduct(p: Product): Product {
     strapMaterial: p.specifications?.strapMaterial || 'Solid Steel / Hand-Stitched Leather',
     powerReserve: p.specifications?.powerReserve || '72 Hours',
     ...(p.specifications || {}),
-    warranty: (p.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')
   };
-
+delete specifications.warranty;
   if (p.specifications?.caseSize || p.specifications?.diameter) {
     specifications.caseSize = (p.specifications.caseSize || p.specifications.diameter).trim();
   }
