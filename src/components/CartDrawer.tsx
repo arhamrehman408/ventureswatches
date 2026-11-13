@@ -193,11 +193,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-[10px] text-gray-500 bg-white p-2.5 rounded border border-gray-200">
-                <ShieldCheck size={16} className="text-amber-600 flex-shrink-0" />
-                <span>Includes 3 Days Warranty & Quality Assurance.</span>
-              </div>
-
               <button
                 onClick={() => {
                   onClose();
