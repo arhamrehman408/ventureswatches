@@ -1177,7 +1177,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <img src={p.images[0]} alt="" className="w-10 h-12 object-contain bg-slate-900 p-1 border border-slate-800" />
                           <div>
                             <div className="font-serif font-semibold text-white">{p.name}</div>
-                            <div className="text-[10px] text-slate-400">{p.specifications?.caseSize ? `${p.specifications.caseSize} • ` : ''}{(p.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}</div>
+                            <div className="text-[10px] text-slate-400">
+  {p.specifications?.caseSize || ''}
+</div>
                           </div>
                         </td>
                         <td className="p-3 font-mono text-slate-400">{p.sku}</td>
