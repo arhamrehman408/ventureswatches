@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { X, ShieldCheck, Truck, RotateCcw, Heart, ShoppingBag, ZoomIn, Check, ChevronDown, ChevronUp, MessageCircle, ArrowLeftRight, Bell, Video } from 'lucide-react';
+import { X, Truck, Heart, ShoppingBag, ZoomIn, Check, ChevronDown, ChevronUp, MessageCircle, ArrowLeftRight, Bell, Video } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { CompareModal } from './CompareModal';
 import { PriceDropAlertModal } from './PriceDropAlertModal';
@@ -349,20 +349,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </button>
                 )}
 
-                <div className="grid grid-cols-3 gap-2 pt-2 text-[10px] text-gray-500 text-center border-t border-gray-100">
-                  <div className="flex flex-col items-center gap-1 p-2 bg-gray-50">
-                    <ShieldCheck size={16} className="text-amber-700" />
-                    <span>3 Days Warranty</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1 p-2 bg-gray-50">
-                    <Truck size={16} className="text-amber-700" />
-                    <span>White-Glove Courier</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1 p-2 bg-gray-50">
-                    <RotateCcw size={16} className="text-amber-700" />
-                    <span>3-Day Returns</span>
-                  </div>
-                </div>
+               <div className="grid grid-cols-1 gap-2 pt-2 text-[10px] text-gray-500 text-center border-t border-gray-100">
+  <div className="flex flex-col items-center gap-1 p-2 bg-gray-50">
+    <Truck size={16} className="text-amber-700" />
+    <span>Smooth Delivery</span>
+  </div>
+</div>
               </div>
             </div>
 
@@ -419,12 +411,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         <span className="font-medium text-[#0B192C]">{product.specifications.strapMaterial}</span>
                       </div>
                     )}
-                    <div className="grid grid-cols-2 gap-2 py-1 border-b border-gray-50">
-                      <span className="text-gray-400">Warranty</span>
-                      <span className="font-semibold text-emerald-700">
-                        {(product.specifications?.warranty || '3 Days Warranty').replace(/guarantee/gi, 'Warranty')}
-                      </span>
-                    </div>
+                  
                     {/* Additional Custom Specifications */}
                     {Object.entries(product.specifications || {}).map(([k, v]) => {
                       const excludedKeys = [
