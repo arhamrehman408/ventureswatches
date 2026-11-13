@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Logo } from './Logo';
-import { Mail, ArrowRight, Shield, Globe, Award, CheckCircle, MessageCircle, Instagram, Facebook, Search, Heart, ShoppingBag } from 'lucide-react';
+import { Mail, ArrowRight, Globe, Award, CheckCircle, MessageCircle, Instagram, Facebook, Search, Heart, ShoppingBag } from 'lucide-react';
 import { CurrencySwitcher } from './CurrencySwitcher';
 import { CMSData } from '../types';
 
@@ -42,29 +42,16 @@ export const Footer: React.FC<FooterProps> = ({
     <footer className="bg-[#0B192C] text-white pt-20 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Brand Value Pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-16 border-b border-slate-800 text-center md:text-left">
-          <div className="flex items-start gap-4 justify-center md:justify-start">
-            <div className="p-3 bg-white/5 rounded-full text-amber-400">
-              <Shield size={24} />
-            </div>
-            <div>
-              <h4 className="text-xs uppercase tracking-[0.2em] font-semibold text-white">
-                {cmsData?.footerTrust1Title?.replace(/7-Day/g, '3-Day').replace(/7 days/gi, '3 days') || '3-Day Checking Warranty'}
-              </h4>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                {(cmsData?.footerTrust1Desc?.replace(/7-day/gi, '3-day').replace(/7 days/gi, '3 days') || 'Each timepiece is backed by our full 3-day checking warranty and quality warranty.').replace(/guarantee/gi, 'warranty')}
-              </p>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-16 border-b border-slate-800 text-center md:text-left">
 
           <div className="flex items-start gap-4 justify-center md:justify-start">
             <div className="p-3 bg-white/5 rounded-full text-amber-400">
               <Globe size={24} />
             </div>
             <div>
-              <h4 className="text-xs uppercase tracking-[0.2em] font-semibold text-white">
-                {cmsData?.footerTrust2Title || 'White-Glove Shipping'}
-              </h4>
+            <h4 className="text-xs uppercase tracking-[0.2em] font-semibold text-white">
+  Smooth Delivery
+</h4>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                 {cmsData?.footerTrust2Desc || 'Insured worldwide delivery with recipient verification and luxury presentation box.'}
               </p>
