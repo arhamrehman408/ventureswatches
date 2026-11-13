@@ -180,7 +180,6 @@ export const QuickUploadWebsiteModal: React.FC<QuickUploadWebsiteModalProps> = (
             crystal: 'Scratch-Resistant Sapphire with AR Coating',
             strapMaterial: 'Solid Steel / Hand-Stitched Leather',
             powerReserve: '72 Hours',
-            warranty: '3 Days Warranty'
           }
         };
 
