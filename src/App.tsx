@@ -1344,7 +1344,7 @@ Every timepiece is thoughtfully selected to balance sophisticated aesthetics wit
                         <option>WhatsApp Quick Inquiry ({cmsData.whatsappNumber || '0319 2265524'})</option>
                         <option>Authentic Watch Allocation</option>
                         <option>High End Clone Inquiries</option>
-                        <option>Warranty & Servicing</option>
+                      <option>Product Enquiries</option>
                       </select>
                     </div>
                     <div>
