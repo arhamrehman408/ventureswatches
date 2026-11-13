@@ -322,9 +322,7 @@ export const OrderEmailVerification: React.FC<OrderEmailVerificationProps> = ({
       `Contact Phone: ${order.customer.phone}\n` +
       (curTracking ? `\nCourier Tracking: ${curTracking} (${curCourier})\n` : '') +
       (curNote ? `\nConcierge Note: ${curNote}\n` : '') +
-      `\nWARRANTY & INSPECTION:\n` +
-      `Your timepiece includes our 3 Days Warranty. For concierge assistance, WhatsApp 03192265524.\n\n` +
-      `Warm regards,\nVentures Watches Concierge\nventureswatches@gmail.com`;
+            `Warm regards,\nVentures Watches Concierge\nventureswatches@gmail.com`;
 
     const gmailWebUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(order.customer.email)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
     const mailtoUrl = `mailto:${encodeURIComponent(order.customer.email)}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
