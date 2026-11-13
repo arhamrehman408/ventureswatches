@@ -15,7 +15,7 @@ export const CraftsmanshipSection: React.FC<CraftsmanshipSectionProps> = ({ cmsD
       title: cmsData.originalWatchesTitle || 'Original Watches',
       subtitle: cmsData.originalWatchesSubtitle || 'Authentic Luxury Watches',
       icon: Award,
-      description: cmsData.originalWatchesDesc || 'Genuine, manufacturer-verified timepieces sourced directly from world-renowned heritage houses. Every piece includes authenticated serial numbers, official documentation, and factory warranty.',
+      description: cmsData.originalWatchesDesc || 'Genuine, manufacturer-verified timepieces sourced directly from world-renowned heritage houses. Every piece includes authenticated serial numbers, official documentation.',
       image: cmsData.originalWatchesImage || '/uploads/vw-media-1791468942252-4107.jpeg'
     },
     {
