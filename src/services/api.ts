@@ -1691,7 +1691,7 @@ export function generateOrderConfirmationEmailHtml(order: Order, customNote?: st
 
             <div style="text-align: center; padding-top: 10px;">
               <p style="font-size: 12px; color: #94A3B8; margin: 0 0 16px 0;">
-                All timepieces include our signature <strong>3 Days Warranty</strong>.
+                All timepieces include our signature <strong></strong>.
               </p>
               <a href="https://wa.me/923192265524?text=${encodeURIComponent(`Hello Ventures Watches, I am inquiring about my confirmed order #${order.orderNumber}`)}" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 600; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-size: 12px; letter-spacing: 0.5px;">
                 💬 Contact WhatsApp Concierge (+92 319 2265524)
@@ -1701,7 +1701,7 @@ export function generateOrderConfirmationEmailHtml(order: Order, customNote?: st
         </tr>
         <tr>
           <td style="background-color: #070F1E; padding: 20px 24px; text-align: center; border-top: 1px solid #1E293B; font-size: 11px; color: #64748B;">
-            © ${new Date().getFullYear()} Ventures Watches. All Rights Reserved. Luxury Watches Warranted.<br/>
+            © ${new Date().getFullYear()} Ventures Watches. All Rights Reserved.<br/>
             Karachi, Pakistan • Official SadaPay Settlement Account: 03192265524 (Muhammad Tayyab Asghar)
           </td>
         </tr>
@@ -2338,7 +2338,7 @@ export function generatePriceDropEmailHtml(alert: PriceDropAlert, newPrice: numb
 
             <table width="100%" cellpadding="12" cellspacing="0" style="background-color: #070F1E; border: 1px solid #1E293B; border-radius: 6px; margin-bottom: 24px; font-size: 12px; color: #94A3B8;">
               <tr>
-                <td width="33%" align="center">🛡️ <strong>3 Days Warranty</strong></td>
+
                 <td width="33%" align="center">🚚 <strong>Free Express Courier</strong></td>
                 <td width="33%" align="center">💳 <strong>SadaPay & Advance</strong></td>
               </tr>
@@ -2353,7 +2353,7 @@ export function generatePriceDropEmailHtml(alert: PriceDropAlert, newPrice: numb
         </tr>
         <tr>
           <td style="background-color: #070F1E; padding: 20px 24px; text-align: center; border-top: 1px solid #1E293B; font-size: 11px; color: #64748B;">
-            © ${new Date().getFullYear()} Ventures Watches. All Rights Reserved. Luxury Watches Warranted.<br/>
+            © ${new Date().getFullYear()} Ventures Watches. All Rights Reserved.<br/>
             Karachi, Pakistan • Official SadaPay: 03192265524 (Muhammad Tayyab Asghar)
           </td>
         </tr>
